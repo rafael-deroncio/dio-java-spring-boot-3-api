@@ -13,7 +13,7 @@ RESTful API da Santander Dev Week 2023 construída em Java 21 com Spring Boot 3.
  - **Mockito**: Com o Mockito, poderemos criar mocks de objetos e simular comportamentos, facilitando a escrita de testes de unidade mais abrangentes e eficazes.
 
 ## Abstração do domínio 
-[Figma](https://www.figma.com/file/cdryxczFtFlledgPmqmXr1/Aplicativo-Banco-Community?type=design&mode=design&t=zSFbowLuxkJkvYhk-1)
+[Figma](https://www.figma.com/file/cdryxczFtFlledgPmqmXr1/Aplicativo-Banco-Community?type=design&mode=design&t=zSFbowLuxkJkvYhk-1)   
 O Figma foi utilizado para a abstração do domínio desta API, sendo útil na análise e projeto da solução.
 
 ## Domínio da API - Contratos
@@ -92,5 +92,5 @@ classDiagram
 ## Documentação da API
 
 [Swagger](#app/swagger-ui.html)
-
+O Swagger foi utilizado para a documentação e testes desta API.
 
