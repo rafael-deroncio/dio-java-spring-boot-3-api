@@ -40,7 +40,7 @@ public class CreditCardModel {
     @Column(name = "expiry_date")
     private Date expiryDate;
 
-    @Column(name = "credit_limit", scale = 13, precision = 2)
+    @Column(name = "credit_limit", scale = 2, precision = 13)
     private BigDecimal creditLimit;
 
     @UpdateTimestamp

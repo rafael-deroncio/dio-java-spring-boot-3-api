@@ -34,7 +34,7 @@ public class InvestmentIncomesModel {
     @Column(name = "income_date")
     private Date incomeDate;
 
-    @Column(name = "amount", scale = 13, precision = 2)
+    @Column(name = "amount", scale = 2, precision = 13)
     private BigDecimal amount;
 
     @Column(name = "description")

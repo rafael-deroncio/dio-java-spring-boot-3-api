@@ -40,7 +40,7 @@ public class PixTransactionModel {
     @Column(name = "transaction_date")
     private Date transactionDate;
 
-    @Column(name = "amount", scale = 13, precision = 2)
+    @Column(name = "amount", scale = 2, precision = 13)
     private BigDecimal amount;
 
     @Column(name = "description")

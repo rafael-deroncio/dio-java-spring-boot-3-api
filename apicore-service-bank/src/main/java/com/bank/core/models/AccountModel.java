@@ -37,7 +37,7 @@ public class AccountModel {
     @Column(name = "account_number")
     private String accountNumber;
 
-    @Column(name = "balance", scale = 13, precision = 2)
+    @Column(name = "balance", scale = 2, precision = 13)
     private BigDecimal balance;
 
     @UpdateTimestamp
