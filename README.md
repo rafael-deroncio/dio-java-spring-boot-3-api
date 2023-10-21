@@ -7,7 +7,7 @@ RESTful API da Santander Dev Week 2023 construída em Java 21 com Spring Boot 3.
  - **Spring Boot 3**: Trabalharemos com a mais nova versão do Spring Boot, que maximiza a produtividade do desenvolvedor por meio de sua poderosa premissa de autoconfiguração;
  - **Spring Data JPA**: Exploraremos como essa ferramenta pode simplificar nossa camada de acesso aos dados, facilitando a integração com bancos de dados SQL;
  - **OpenAPI (Swagger)**: Vamos criar uma documentação de API eficaz e fácil de entender usando a OpenAPI (Swagger), perfeitamente alinhada com a alta produtividade que o Spring Boot oferece;
- - **Railway**: facilita o deploy e monitoramento de nossas soluções na nuvem, além de oferecer diversos bancos de dados como serviço e pipelines de CI/CD.
+ - **Railway**: Facilita o deploy e monitoramento de nossas soluções na nuvem, além de oferecer diversos bancos de dados como serviço e pipelines de CI/CD.
  - **MapperModel**: Utilizaremos a biblioteca MapperModel para mapear objetos entre diferentes camadas da aplicação de forma eficiente;
  - **JUnit 5**: Faremos uso do JUnit 5 para escrever testes unitários robustos que garantam a qualidade do nosso código;
  - **Mockito**: Com o Mockito, poderemos criar mocks de objetos e simular comportamentos, facilitando a escrita de testes de unidade mais abrangentes e eficazes.
@@ -56,6 +56,6 @@ classDiagram
   User "1" *-- "N" News
 ```
 
-## Documentação da API (Swagger)
+## Documentação da API
 
-### [#.app/swagger-ui.html](#app/swagger-ui.html)
+### [Swagger](#app/swagger-ui.html)
