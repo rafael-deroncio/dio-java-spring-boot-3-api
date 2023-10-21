@@ -12,7 +12,7 @@ RESTful API da Santander Dev Week 2023 construída em Java 21 com Spring Boot 3.
  - **JUnit 5**: Faremos uso do JUnit 5 para escrever testes unitários robustos que garantam a qualidade do nosso código;
  - **Mockito**: Com o Mockito, poderemos criar mocks de objetos e simular comportamentos, facilitando a escrita de testes de unidade mais abrangentes e eficazes.
 
-## [Link do Figma](https://www.figma.com/file/cdryxczFtFlledgPmqmXr1/Aplicativo-Banco-Community?type=design&t=zSFbowLuxkJkvYhk-6)
+## [Link do Figma](https://www.figma.com/file/cdryxczFtFlledgPmqmXr1/Aplicativo-Banco-Community?type=design&mode=design&t=zSFbowLuxkJkvYhk-1)
 
 O Figma foi utilizado para a abstração do domínio desta API, sendo útil na análise e projeto da solução.
 
