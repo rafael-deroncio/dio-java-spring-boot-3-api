@@ -16,7 +16,7 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public UserResponse getUser(UserRequest request) {
+    public UserResponse getUser(String username) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUser'");
     }
