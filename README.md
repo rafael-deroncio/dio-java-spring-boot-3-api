@@ -90,7 +90,6 @@ classDiagram
 ```
 
 ## Documentação da API
-
-[Swagger](#app/swagger-ui.html)
+[Swagger](#app/swagger-ui.html)    
 O Swagger foi utilizado para a documentação e testes desta API.
 
