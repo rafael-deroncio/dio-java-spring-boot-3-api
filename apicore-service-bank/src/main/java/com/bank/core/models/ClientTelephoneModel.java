@@ -20,6 +20,9 @@ public class ClientTelephoneModel {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
+    @Column(name = "type_phone_number", nullable = false)
+    private String typePhoneNumber;
+
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")

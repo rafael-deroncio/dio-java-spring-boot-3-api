@@ -31,6 +31,9 @@ public class ClientModel {
     @Column(name = "birth_date", nullable = false)
     private Date birthDate;
 
+    @Column(name = "email", nullable = false)
+    private String email;
+
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
@@ -127,4 +130,11 @@ public class ClientModel {
         this.telephones = telephones;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
