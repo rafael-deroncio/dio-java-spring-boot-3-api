@@ -4,6 +4,7 @@ import com.bank.core.models.*;
 
 public interface IBankRepository {
     BankModel saveBank(BankModel bank);
+    BankModel getBank();
     AgencyModel saveAgency(AgencyModel agency);
     AgencyAddressModel saveAgencyAddress(AgencyAddressModel agencyAddress);
 
@@ -11,9 +12,11 @@ public interface IBankRepository {
     AccountModel saveAccount(AccountModel account);
     AccountModel getAccount(Integer number);
     AccountTransactionModel saveAccountTransaction(AccountTransactionModel account);
+    AccountModel getAccountClient(ClientModel client);
 
 
     CreditCardModel saveCreditCard(CreditCardModel creditCard);
+    CreditCardModel getCreditCardAccount(Integer accountNumber);
     CreditCardTransactionModel saveCreditCardTransaction(CreditCardTransactionModel creditCardTransaction);
 
 

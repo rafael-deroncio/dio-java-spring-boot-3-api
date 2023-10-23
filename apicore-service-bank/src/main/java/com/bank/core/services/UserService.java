@@ -1,19 +1,15 @@
 package com.bank.core.services;
 
 import com.bank.core.enums.ErrorResponseType;
+import com.bank.core.exceptions.AccountBusinessRuleException;
 import com.bank.core.exceptions.UserBusinessRuleException;
-import com.bank.core.models.ClientAddressModel;
-import com.bank.core.models.ClientModel;
-import com.bank.core.models.ClientTelephoneModel;
-import com.bank.core.models.UserModel;
+import com.bank.core.models.*;
 import com.bank.core.repositories.ClientRepository;
 import com.bank.core.repositories.UserRepository;
 import com.bank.core.responses.CepDetailsResponse;
 import com.bank.core.utils.FormatterUtil;
 import com.bank.core.utils.PasswordHasherUtils;
-import com.bank.domain.responses.AddressResponse;
-import com.bank.domain.responses.ClientResponse;
-import com.bank.domain.responses.TelephoneContactResponse;
+import com.bank.domain.responses.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.bank.core.services.interfaces.IUserService;
 import com.bank.domain.requests.UserRequest;
-import com.bank.domain.responses.UserResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +29,11 @@ public class UserService implements IUserService{
 
     @Autowired
     ClientRepository _clientRepository;
+
+    @Autowired
+    BankService _bankService;
+
+
     @Autowired
     ModelMapper _mapper;
 
@@ -119,7 +119,6 @@ public class UserService implements IUserService{
         throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
     }
 
-
     private UserResponse getUserResponse(UserModel user, String username, ClientModel client, String cpf) {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
@@ -134,8 +133,17 @@ public class UserService implements IUserService{
         TelephoneContactResponse telephoneContactResponse = _mapper.map(client.getTelephones().get(0), TelephoneContactResponse.class);
         AddressResponse addressResponse = _mapper.map(client.getAddresses().get(0), AddressResponse.class);
 
+        AccountResponse accountResponse = new AccountResponse();
+
+        try {
+            accountResponse = _bankService.gerAccountClient(client);
+        } catch (AccountBusinessRuleException e) {
+            accountResponse = null;
+        }
+
         clientResponse.setTelephone(telephoneContactResponse);
         clientResponse.setAddress(addressResponse);
+        userResponse.setAccount(accountResponse);
         userResponse.setClient(clientResponse);
         return userResponse;
     }

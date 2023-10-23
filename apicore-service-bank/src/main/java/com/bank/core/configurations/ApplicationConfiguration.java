@@ -41,7 +41,7 @@ public class ApplicationConfiguration {
         creditCard.setAccount(account);
         creditCard.setCardNumber("1234567890123456");
         creditCard.setExpiryDate(new Date());
-        creditCard.setCreditLimit(new BigDecimal("5000.00"));
+        creditCard.setLimit(new BigDecimal("5000.00"));
 
         CreditCardTransactionModel transaction1 = new CreditCardTransactionModel();
         transaction1.setCreditCard(creditCard);

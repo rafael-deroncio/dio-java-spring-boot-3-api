@@ -7,6 +7,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 @Component
@@ -66,6 +68,23 @@ public class FormatterUtil {
             return cep.replace("-", "");
         } else {
             throw new ClientBusinessRuleException(String.format("invalid CEP format '%s'", cep), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+    }
+
+    public String formatExpyresDate(Date data) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/yy");
+        return sdf.format(data);
+    }
+
+    public String formatCreditCardNumber(String creditCardNumber) {
+        int length = creditCardNumber.length();
+
+        if (length >= 4) {
+            String lastFourDigits = creditCardNumber.substring(length - 4);
+            String mask = "XXXX XXXX XXXX ";
+            return mask + lastFourDigits;
+        } else {
+            return creditCardNumber;
         }
     }
 }

@@ -45,6 +45,12 @@ public class BankRepository implements IBankRepository {
     }
 
     @Override
+    public BankModel getBank() {
+        BankModel bank = this._bankContextRepository.findAll().get(0);
+        return bank == null ? null : bank;
+    }
+
+    @Override
     public AgencyModel saveAgency(AgencyModel agency) {
         return this._agencyContextRepository.save(agency);
     }
@@ -64,6 +70,12 @@ public class BankRepository implements IBankRepository {
         return this._accountContextRepository.getReferenceById(number);
     }
 
+
+    @Override
+    public AccountModel getAccountClient(ClientModel client) {
+        return this._accountContextRepository.getAccountByClientId(client.getId());
+    }
+
     @Override
     public AccountTransactionModel saveAccountTransaction(AccountTransactionModel account) {
         return this._accountTransactionContextRepository.save(account);
@@ -72,6 +84,11 @@ public class BankRepository implements IBankRepository {
     @Override
     public CreditCardModel saveCreditCard(CreditCardModel creditCard) {
         return this._creditCardContextRepository.save(creditCard);
+    }
+
+    @Override
+    public CreditCardModel getCreditCardAccount(Integer accountNumber) {
+        return _creditCardContextRepository.findByAccountNumber(accountNumber);
     }
 
     @Override

@@ -8,6 +8,7 @@ public class CreditCardResponse {
     private String number;
     private String expires;
     private BigDecimal limit;
+    private BigDecimal avaliableLimit;
     private List<TransactionResponse> transactions;
 
     public String getNumber() {
@@ -40,5 +41,13 @@ public class CreditCardResponse {
 
     public void setTransactions(List<TransactionResponse> transactions) {
         this.transactions = transactions;
+    }
+
+    public BigDecimal getAvaliableLimit() {
+        return avaliableLimit;
+    }
+
+    public void setAvaliableLimit(BigDecimal avaliableLimit) {
+        this.avaliableLimit = avaliableLimit;
     }
 }

@@ -41,7 +41,7 @@ public class CreditCardModel {
     private Date expiryDate;
 
     @Column(name = "credit_limit", scale = 2, precision = 13)
-    private BigDecimal creditLimit;
+    private BigDecimal limit;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -88,12 +88,12 @@ public class CreditCardModel {
         this.expiryDate = expiryDate;
     }
 
-    public BigDecimal getCreditLimit() {
-        return creditLimit;
+    public BigDecimal getLimit() {
+        return limit;
     }
 
-    public void setCreditLimit(BigDecimal creditLimit) {
-        this.creditLimit = creditLimit;
+    public void setLimit(BigDecimal limit) {
+        this.limit = limit;
     }
 
     public Date getCreatedDate() {
