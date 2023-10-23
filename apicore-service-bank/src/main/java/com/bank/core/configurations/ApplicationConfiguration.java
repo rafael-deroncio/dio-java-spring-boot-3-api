@@ -18,9 +18,12 @@ import java.util.List;
 public class ApplicationConfiguration {
 
     private final Date TODAY = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-    @Autowired BankRepository _bankRepository;
-    @Autowired UserRepository _userRepository;
-    @Autowired ClientRepository _clientRepository;
+    @Autowired
+    BankRepository _bankRepository;
+    @Autowired
+    UserRepository _userRepository;
+    @Autowired
+    ClientRepository _clientRepository;
 
     public void start() {
         startBank();
@@ -175,7 +178,7 @@ public class ApplicationConfiguration {
         _clientRepository.saveClientTelephone(telephone);
     }
 
-    private void startBank(){
+    private void startBank() {
         BankModel bank = new BankModel();
         bank.setName("DevBank co.");
 
