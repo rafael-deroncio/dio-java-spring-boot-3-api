@@ -21,7 +21,7 @@ public class ClientTelephoneModel {
     private String phoneNumber;
 
     @Column(name = "type_phone_number", nullable = false)
-    private String typePhoneNumber;
+    private String typePhoneNumber = "outhers";
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -73,4 +73,7 @@ public class ClientTelephoneModel {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public String getTypePhoneNumber() {
+        return typePhoneNumber;
+    }
 }

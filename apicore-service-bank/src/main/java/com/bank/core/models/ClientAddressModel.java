@@ -21,6 +21,12 @@ public class ClientAddressModel {
     
     @Column(name = "street", nullable = false)
     private String street;
+
+    @Column(name = "number", nullable = false)
+    private Integer number;
+
+    @Column(name = "complement", nullable = false)
+    private String complement;
     
     @Column(name = "city", nullable = false)
     private String city;
@@ -105,5 +111,19 @@ public class ClientAddressModel {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public Integer getNumber() {
+        return number;
+    }
 
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public String getComplement() {
+        return complement;
+    }
+
+    public void setComplement(String complement) {
+        this.complement = complement;
+    }
 }

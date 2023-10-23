@@ -29,13 +29,7 @@ public class UserModel {
     private String username;
 
     @Column(name = "passwordhash", nullable = false)
-    private String passwordHash;
-
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    private String password;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -67,27 +61,11 @@ public class UserModel {
     }
 
     public String getPasswordHash() {
-        return passwordHash;
+        return password;
     }
 
     public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.password = passwordHash;
     }
 
     public Date getCreatedDate() {

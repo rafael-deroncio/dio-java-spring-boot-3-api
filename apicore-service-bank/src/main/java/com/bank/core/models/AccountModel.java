@@ -1,17 +1,6 @@
 package com.bank.core.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -33,9 +22,6 @@ public class AccountModel {
 
     @Column(name = "cod_agency")
     private Integer codAgency;
-
-    @Column(name = "account_number")
-    private String accountNumber;
 
     @Column(name = "balance", scale = 2, precision = 13)
     private BigDecimal balance;
@@ -75,14 +61,6 @@ public class AccountModel {
 
     public void setCodAgency(Integer codAgency) {
         this.codAgency = codAgency;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public BigDecimal getBalance() {
