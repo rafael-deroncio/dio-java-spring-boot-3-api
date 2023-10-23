@@ -71,7 +71,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler({UserBusinessRuleException.class})
+    @ExceptionHandler(UserBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(UserBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, response, headers(), HttpStatus.valueOf(exception.getCode()), request);
     }
 
-    @ExceptionHandler({ClientBusinessRuleException.class})
+    @ExceptionHandler(ClientBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(ClientBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, response, headers(), HttpStatus.valueOf(exception.getCode()), request);
     }
 
-    @ExceptionHandler({AccountBusinessRuleException.class})
+    @ExceptionHandler(AccountBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(AccountBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, response, headers(), HttpStatus.valueOf(exception.getCode()), request);
     }
 
-    @ExceptionHandler({AgencyBusinessRuleException.class})
+    @ExceptionHandler(AgencyBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(AgencyBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, response, headers(), HttpStatus.valueOf(exception.getCode()), request);
     }
 
-    @ExceptionHandler({CreditCardBusinessRuleException.class})
+    @ExceptionHandler(CreditCardBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(CreditCardBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
@@ -131,7 +131,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, response, headers(), HttpStatus.valueOf(exception.getCode()), request);
     }
 
-    @ExceptionHandler({InvestimentBusinessRuleException.class})
+    @ExceptionHandler(InvestimentBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(InvestimentBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
@@ -143,7 +143,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception, response, headers(), HttpStatus.valueOf(exception.getCode()), request);
     }
 
-    @ExceptionHandler({CreditCardBusinessRuleException.class})
+    @ExceptionHandler(PixBusinessRuleException.class)
     private ResponseEntity<Object> handleApiException(PixBusinessRuleException exception, WebRequest request) {
 
         ExceptionResponse response = exceptionResponse(
