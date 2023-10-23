@@ -23,11 +23,18 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
+    public UserModel getUser(String username) {
+        UserModel user = this._userContextRepository.findByUsername(username);
+        return user;
+    }
+
+    @Override
     public UserModel updateUser(UserModel newUser) {
         return null;
     }
 
     @Override
-    public UserModel deleteUser(UserModel newUser) { return null;
+    public UserModel deleteUser(UserModel newUser) {
+        return null;
     }
 }

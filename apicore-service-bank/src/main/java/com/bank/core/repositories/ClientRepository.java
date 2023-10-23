@@ -28,6 +28,16 @@ public class ClientRepository implements IClientRepository {
     }
 
     @Override
+    public ClientModel getClient(ClientModel client) {
+        return null;
+    }
+
+    @Override
+    public ClientModel getClient(String cpf) {
+        return null;
+    }
+
+    @Override
     public ClientTelephoneModel saveClientTelephone(ClientTelephoneModel clientTelephone) {
         return this._clientTelephoneContextRepository.save(clientTelephone);
     }

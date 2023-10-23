@@ -6,7 +6,7 @@ public class ClientResponse {
     private String name;
     private String document;
     private String email;
-    private List<TelephoneContactResponse> telephones;
+    private TelephoneContactResponse telephones;
     private AddressResponse address;
 
     public String getName() {
@@ -33,11 +33,11 @@ public class ClientResponse {
         this.email = email;
     }
 
-    public List<TelephoneContactResponse> getTelephones() {
+    public TelephoneContactResponse getTelephones() {
         return telephones;
     }
 
-    public void setTelephones(List<TelephoneContactResponse> telephones) {
+    public void setTelephone(TelephoneContactResponse telephones) {
         this.telephones = telephones;
     }
 

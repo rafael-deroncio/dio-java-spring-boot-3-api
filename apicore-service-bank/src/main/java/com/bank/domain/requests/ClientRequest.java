@@ -47,7 +47,7 @@ public class ClientRequest {
     private Integer houseNumber;
 
     @Schema(description = "House complement of the client")
-    private Integer houseComplement;
+    private String houseComplement;
 
     public String getFirstName() {
         return firstName;
@@ -113,11 +113,11 @@ public class ClientRequest {
         this.houseNumber = houseNumber;
     }
 
-    public Integer getHouseComplement() {
+    public String getHouseComplement() {
         return houseComplement;
     }
 
-    public void setHouseComplement(Integer houseComplement) {
+    public void setHouseComplement(String houseComplement) {
         this.houseComplement = houseComplement;
     }
 }
