@@ -1,5 +1,7 @@
 package com.bank.core.services;
 
+import com.bank.core.repositories.interfaces.IUserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.bank.core.services.interfaces.IUserService;
@@ -8,6 +10,15 @@ import com.bank.domain.responses.UserResponse;
 
 @Service
 public class UserService implements IUserService{
+
+    private final IUserRepository _userRepository;
+    private final ModelMapper _mapper;
+
+
+    public UserService(IUserRepository userRepository, ModelMapper mapper) {
+        _mapper = mapper;
+        _userRepository = userRepository;
+    }
 
     @Override
     public UserResponse createUser(UserRequest request) {
