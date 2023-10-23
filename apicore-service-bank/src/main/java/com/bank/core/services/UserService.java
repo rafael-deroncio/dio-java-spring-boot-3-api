@@ -9,7 +9,9 @@ import com.bank.core.repositories.UserRepository;
 import com.bank.core.responses.CepDetailsResponse;
 import com.bank.core.utils.FormatterUtil;
 import com.bank.core.utils.PasswordHasherUtils;
+import com.bank.domain.requests.ClientRequest;
 import com.bank.domain.responses.*;
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,24 +60,12 @@ public class UserService implements IUserService{
                     HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
         }
 
-        UserModel newUser = new UserModel();
-        newUser.setUsername(username);
-        newUser.setPasswordHash(_passwordHasher.encryptPassword(request.getPassword().trim()));
+        request.setUsername(username);
+        ClientRequest clientDetails = request.getClientDetails();
+        clientDetails.setCpfDocument(cpf);
+        request.setClientDetails(clientDetails);
 
-        ClientModel newClient = _mapper.map(request.getClientDetails(), ClientModel.class);
-        newClient.setCpf(cpf);
-
-        List<ClientTelephoneModel> telephones = getNewClientTelephones(request, newClient);
-        List<ClientAddressModel> addresses = getNewClientAddress(request, newClient);
-
-        newUser.setClient(newClient);
-        newClient.setUser(newUser);
-        newClient.setTelephones(telephones);
-        newClient.setAddresses(addresses);
-
-        newUser = _userRepository.saveUser(newUser);
-
-        return getUserResponse(newUser, username, newClient, cpf);
+        return saveUser(request);
     }
 
     @Override
@@ -90,7 +80,7 @@ public class UserService implements IUserService{
         }
 
         ClientModel clientModel = _clientRepository.getClient(userModel.getId());
-        return getUserResponse(userModel, username, clientModel, clientModel.getCpf());
+        return getUserResponse(userModel, username, clientModel);
     }
 
     @Override
@@ -104,30 +94,76 @@ public class UserService implements IUserService{
         }
 
         ClientModel clientModel = _clientRepository.getClient(userModel.getId());
-        return getUserResponse(userModel, userModel.getUsername(), clientModel, clientModel.getCpf());
+        return getUserResponse(userModel, userModel.getUsername(), clientModel);
     }
 
     @Override
     public UserResponse updateUser(Integer id, UserRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+        String cpf = _formatter.formatCpf(request.getClientDetails().getCpfDocument());
+        String username = _formatter.formatUsername(request.getUsername());
+
+        ClientModel clientByUsername = this._clientRepository.getClient(cpf);
+        ClientModel clientByCpf = this._clientRepository.getClient(cpf);
+
+        if (
+                (clientByUsername != null && clientByUsername.getId() != id)
+                ||
+                (clientByCpf != null && clientByCpf.getId() != id)
+        ) {
+            throw new UserBusinessRuleException(
+                    String.format("username '%s' or cpf '%s' are already registered with another user", username, cpf),
+                    HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+
+        request.setUsername(username);
+        ClientRequest clientDetails = request.getClientDetails();
+        clientDetails.setCpfDocument(cpf);
+        request.setClientDetails(clientDetails);
+
+        return saveUser(request);
     }
 
     @Override
     public Boolean deactivateUser(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        UserModel user = _userRepository.getUser(id);
+        if(user == null) {
+            throw new UserBusinessRuleException(
+                    String.format("user with id '%s' not found", id),
+                    HttpStatus.BAD_REQUEST, ErrorResponseType.Error);
+        }
+        return _userRepository.deleteUser(user) != null;
     }
 
-    private UserResponse getUserResponse(UserModel user, String username, ClientModel client, String cpf) {
+    public UserResponse saveUser(UserRequest request) {
+        UserModel newUser = new UserModel();
+        newUser.setUsername(request.getUsername());
+        newUser.setPasswordHash(_passwordHasher.encryptPassword(request.getPassword().trim()));
+
+        ClientModel newClient = _mapper.map(request.getClientDetails(), ClientModel.class);
+        newClient.setCpf(request.getClientDetails().getCpfDocument());
+
+        List<ClientTelephoneModel> telephones = getNewClientTelephones(request, newClient);
+        List<ClientAddressModel> addresses = getNewClientAddress(request, newClient);
+
+        newUser.setClient(newClient);
+        newClient.setUser(newUser);
+        newClient.setTelephones(telephones);
+        newClient.setAddresses(addresses);
+
+        newUser = _userRepository.saveUser(newUser);
+
+        return getUserResponse(newUser, null, newClient);
+    }
+
+    private UserResponse getUserResponse(UserModel user, String username, ClientModel client) {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(user.getId());
-        userResponse.setUsername(username);
+        userResponse.setUsername(user.getUsername());
         userResponse.setCreatedDate(user.getCreatedDate());
 
         ClientResponse clientResponse = new ClientResponse();
         clientResponse.setName(client.getFirstName().toUpperCase() + " " + client.getLastName().toUpperCase());
-        clientResponse.setDocument(cpf);
+        clientResponse.setDocument(client.getCpf());
         clientResponse.setEmail(client.getEmail());
 
         TelephoneContactResponse telephoneContactResponse = _mapper.map(client.getTelephones().get(0), TelephoneContactResponse.class);

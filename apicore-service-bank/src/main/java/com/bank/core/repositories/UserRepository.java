@@ -28,11 +28,6 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public UserModel updateUser(UserModel newUser) {
-        return null;
-    }
-
-    @Override
     public UserModel deleteUser(UserModel newUser) {
         return null;
     }
