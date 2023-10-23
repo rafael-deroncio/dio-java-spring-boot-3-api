@@ -18,14 +18,13 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public UserModel getUser(UserModel newUser) {
-        return null;
+    public UserModel getUser(Integer id) {
+        return this._userContextRepository.findById(id).orElse(null);
     }
 
     @Override
     public UserModel getUser(String username) {
-        UserModel user = this._userContextRepository.findByUsername(username);
-        return user;
+        return this._userContextRepository.findByUsername(username);
     }
 
     @Override

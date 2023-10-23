@@ -10,6 +10,8 @@ import com.bank.core.repositories.interfaces.IClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.stream.Collectors;
+
 @Repository
 public class ClientRepository implements IClientRepository {
 
@@ -29,8 +31,16 @@ public class ClientRepository implements IClientRepository {
 
     @Override
     public ClientModel getClient(ClientModel client) {
-        return null;
+        return _clientContextRepository.findById(client.getId()).orElse(null);
     }
+
+    @Override
+    public ClientModel getClient(Integer userId) {
+        ClientModel client = this._clientContextRepository.getClientByUserId(userId);
+        client.setAddresses(this._clientAddressContextRepository.getClientAddress(client.getId()));
+        return client;
+    }
+
 
     @Override
     public ClientModel getClient(String cpf) {

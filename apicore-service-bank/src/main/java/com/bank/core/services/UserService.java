@@ -78,19 +78,61 @@ public class UserService implements IUserService{
         return getUserResponse(newUser, username, newClient, cpf);
     }
 
-    private UserResponse getUserResponse(UserModel newUser, String username, ClientModel newClient, String cpf) {
+    @Override
+    public UserResponse getUser(String username) {
+        username = _formatter.formatUsername(username);
+        UserModel userModel = _userRepository.getUser(username);
+
+        if (userModel == null) {
+            throw new UserBusinessRuleException(
+                    String.format("username '%s' not  registered", username),
+                    HttpStatus.BAD_REQUEST, ErrorResponseType.Error);
+        }
+
+        ClientModel clientModel = _clientRepository.getClient(userModel.getId());
+        return getUserResponse(userModel, username, clientModel, clientModel.getCpf());
+    }
+
+    @Override
+    public UserResponse getUser(Integer id) {
+        UserModel userModel = _userRepository.getUser(id);
+
+        if (userModel == null) {
+            throw new UserBusinessRuleException(
+                    String.format("username '%s' not  registered", id),
+                    HttpStatus.BAD_REQUEST, ErrorResponseType.Error);
+        }
+
+        ClientModel clientModel = _clientRepository.getClient(userModel.getId());
+        return getUserResponse(userModel, userModel.getUsername(), clientModel, clientModel.getCpf());
+    }
+
+    @Override
+    public UserResponse updateUser(Integer id, UserRequest request) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+    }
+
+    @Override
+    public Boolean deactivateUser(Integer id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+    }
+
+
+    private UserResponse getUserResponse(UserModel user, String username, ClientModel client, String cpf) {
         UserResponse userResponse = new UserResponse();
-        userResponse.setId(newUser.getId());
+        userResponse.setId(user.getId());
         userResponse.setUsername(username);
-        userResponse.setCreatedDate(newUser.getCreatedDate());
+        userResponse.setCreatedDate(user.getCreatedDate());
 
         ClientResponse clientResponse = new ClientResponse();
-        clientResponse.setName(newClient.getFirstName().toUpperCase() + " " + newClient.getLastName().toUpperCase());
+        clientResponse.setName(client.getFirstName().toUpperCase() + " " + client.getLastName().toUpperCase());
         clientResponse.setDocument(cpf);
-        clientResponse.setEmail(newClient.getEmail());
+        clientResponse.setEmail(client.getEmail());
 
-        TelephoneContactResponse telephoneContactResponse = _mapper.map(newClient.getTelephones().get(0), TelephoneContactResponse.class);
-        AddressResponse addressResponse = _mapper.map(newClient.getAddresses().get(0), AddressResponse.class);
+        TelephoneContactResponse telephoneContactResponse = _mapper.map(client.getTelephones().get(0), TelephoneContactResponse.class);
+        AddressResponse addressResponse = _mapper.map(client.getAddresses().get(0), AddressResponse.class);
 
         clientResponse.setTelephone(telephoneContactResponse);
         clientResponse.setAddress(addressResponse);
@@ -125,28 +167,5 @@ public class UserService implements IUserService{
         return address;
     }
 
-    @Override
-    public UserResponse getUser(String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
-    }
 
-    @Override
-    public UserResponse getUser(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
-    }
-
-    @Override
-    public UserResponse updateUser(Integer id, UserRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
-    }
-
-    @Override
-    public Boolean deactivateUser(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
-    }
-    
 }

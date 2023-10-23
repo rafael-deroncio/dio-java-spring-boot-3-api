@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok(this._userService.createUser(request));
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username}")
     @Operation(summary = "Get a user details by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserResponse.class)))),
