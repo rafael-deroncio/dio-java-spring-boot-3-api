@@ -3,8 +3,14 @@ package com.bank.core.repositories;
 import com.bank.core.models.*;
 import com.bank.core.repositories.contexts.*;
 import com.bank.core.repositories.interfaces.IBankRepository;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class BankRepository implements IBankRepository {
@@ -15,24 +21,20 @@ public class BankRepository implements IBankRepository {
     AgencyContextRepository _agencyContextRepository;
     @Autowired
     AgencyAddressContextRepository _agencyAddressContextRepository;
-
     @Autowired
     AccountContextRepository _accountContextRepository;
     @Autowired
     AccountTransactionContextRepository _accountTransactionContextRepository;
-
     @Autowired
     PixContextRepository _pixContextRepository;
     @Autowired
     PixDetailContextRepository _pixDetailContextRepository;
     @Autowired
     PixTransactionContextRepository _pixTransactionContextRepository;
-
     @Autowired
     InvestmentContextRepository _investmentContextRepository;
     @Autowired
     InvestmentIncomesContextRepository _investmentIncomesContextRepository;
-
     @Autowired
     CreditCardContextRepository _creditCardContextRepository;
     @Autowired
@@ -46,9 +48,34 @@ public class BankRepository implements IBankRepository {
 
     @Override
     public BankModel getBank() {
-        BankModel bank = this._bankContextRepository.findAll().get(0);
-        return bank == null ? null : bank;
+        return this._bankContextRepository.getBank();
     }
+
+    @Override
+    public Map<Integer, BigDecimal> getCapitalAccounts() {
+        Map<Integer, BigDecimal> capitalAccounts = new HashMap<>();
+        List<AccountModel> accounts = _accountContextRepository.getAccounts();
+
+        for (AccountModel account : accounts) {
+            BigDecimal totalAmount = BigDecimal.ZERO;
+
+            if (account.getTransactions() != null) {
+                for (AccountTransactionModel transaction : account.getTransactions()) {
+                    totalAmount = totalAmount.add(transaction.getAmount());
+                }
+            }
+
+            capitalAccounts.put(account.getCodAgency(), totalAmount);
+        }
+
+        return capitalAccounts;
+    }
+
+    @Override
+    public   List<AccountModel> getAccountsByAgencyNumber(Integer number){
+        return this._accountContextRepository.getAccountsByAgencyNumber(number);
+    }
+
 
     @Override
     public AgencyModel saveAgency(AgencyModel agency) {
@@ -74,6 +101,11 @@ public class BankRepository implements IBankRepository {
     @Override
     public AccountModel getAccountClient(ClientModel client) {
         return this._accountContextRepository.getAccountByClientId(client.getId());
+    }
+
+    @Override
+    public AccountModel getAccountClient(Integer id) {
+        return this._accountContextRepository.getAccountByClientId(id);
     }
 
     @Override

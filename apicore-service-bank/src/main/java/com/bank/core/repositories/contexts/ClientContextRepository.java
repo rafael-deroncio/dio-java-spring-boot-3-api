@@ -13,7 +13,6 @@ public interface ClientContextRepository extends JpaRepository<ClientModel, Inte
     @Query("SELECT c FROM ClientModel c " +
             "JOIN FETCH c.user " +
             "LEFT JOIN FETCH c.addresses " +
-            "LEFT JOIN FETCH c.telephones " +
             "WHERE c.id = :clientId")
     ClientModel getClient(@Param("clientId") Integer clientId);
 
@@ -28,4 +27,5 @@ public interface ClientContextRepository extends JpaRepository<ClientModel, Inte
             "LEFT JOIN FETCH c.telephones " +
             "WHERE c.cpf = :cpf")
     ClientModel getClientByCpf(@Param("cpf") String cpf);
+
 }

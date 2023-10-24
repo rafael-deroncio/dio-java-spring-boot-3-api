@@ -2,11 +2,14 @@ package com.bank.core.services;
 
 import com.bank.core.enums.ErrorResponseType;
 import com.bank.core.exceptions.AccountBusinessRuleException;
+import com.bank.core.exceptions.AgencyBusinessRuleException;
 import com.bank.core.models.*;
 import com.bank.core.repositories.BankRepository;
+import com.bank.core.repositories.ClientRepository;
 import com.bank.core.services.interfaces.IBankService;
 import com.bank.core.utils.FormatterUtil;
 import com.bank.domain.responses.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BankService implements IBankService {
@@ -22,16 +26,97 @@ public class BankService implements IBankService {
     BankRepository _bankRepository;
 
     @Autowired
+    ClientRepository _clientRepository;
+
+    @Autowired
     FormatterUtil _formatter;
+
+    @Autowired
+    ModelMapper _mapper;
 
     @Override
     public BankDetailsResponse getBankDetails() {
-        return null;
+        BankModel bank = _bankRepository.getBank();
+        if (bank == null) { return null; }
+
+        BankDetailsResponse response = new BankDetailsResponse();
+        response.setName(String.format("%s - %s", bank.getId(), bank.getName()));
+        response.setCreatedDate(bank.getCreatedDate());
+
+        List<AgencyResponse> agencies = new ArrayList<>();
+        for (AgencyModel agency : bank.getAgencies()) {
+            AgencyResponse agencyResponse = new AgencyResponse();
+
+            String name = String.format("%s - %s", agency.getId(), agency.getAddress().getStreet());
+            agencyResponse.setNumber(agency.getId());
+            agencyResponse.setName(name);
+            agencyResponse.setCreatedDate(agency.getCreatedDate());
+
+            AddressResponse addressResponse = new AddressResponse();
+            addressResponse.setStreet(agency.getAddress().getStreet());
+            addressResponse.setState(agency.getAddress().getState());
+            addressResponse.setCity(agency.getAddress().getCity());
+            addressResponse.setZipcode(agency.getAddress().getZipcode());
+
+            agencyResponse.setAddress(addressResponse);
+
+            agencies.add(agencyResponse);
+        }
+
+        response.setAgencies(agencies);
+
+        BigDecimal capital = new BigDecimal(0);
+        for (BigDecimal value : _bankRepository.getCapitalAccounts().values()) {
+            capital = capital.add(value);
+        }
+
+        response.setCapital(capital);
+        return response;
     }
 
     @Override
     public AgencyDetailsResponse getAgencyDetails(Integer number) {
-        return null;
+        try {
+            AgencyDetailsResponse response = null;
+
+            List<AgencyResponse> bankDetails = getBankDetails().getAgencies();
+
+            for (AgencyResponse agency : getBankDetails().getAgencies()) {
+                if (agency.getNumber().equals(number)) {
+                    response = _mapper.map(agency, AgencyDetailsResponse.class);
+                    break;
+                }
+            }
+            if (response.equals(null)) {
+                throw new AgencyBusinessRuleException(String.format("agency with number '$s' not found", number),
+                        HttpStatus.BAD_REQUEST, ErrorResponseType.Error);
+            }
+
+            List<AccountDetailResponse> AccountDetails = new ArrayList<>();
+            for (AccountModel account : _bankRepository.getAccountsByAgencyNumber(number)) {
+                AccountDetailResponse accountDetailResponse = new AccountDetailResponse();
+
+                accountDetailResponse.setNumber(account.getId());
+                accountDetailResponse.setOpenDate(account.getCreatedDate());
+
+                ClientModel client = _clientRepository.getClientById(account.getCodClient());
+                String name = String.format("%s %s", client.getFirstName().toUpperCase(), client.getLastName().toUpperCase());
+                accountDetailResponse.setOwner(name);
+                accountDetailResponse.setOwnerId(account.getCodClient());
+
+                BigDecimal capital = new BigDecimal(0);
+                for (AccountTransactionModel transaction : account.getTransactions()) {
+                    capital = capital.add(transaction.getAmount());
+                }
+                accountDetailResponse.setBalance(capital);
+                AccountDetails.add(accountDetailResponse);
+            }
+
+            response.setAccounts(AccountDetails);
+            return response;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override

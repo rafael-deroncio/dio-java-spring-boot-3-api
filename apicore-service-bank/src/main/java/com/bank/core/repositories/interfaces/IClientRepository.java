@@ -8,6 +8,7 @@ public interface IClientRepository {
     ClientModel saveClient(ClientModel client);
     ClientModel getClient(ClientModel client);
     ClientModel getClient(Integer userId);
+    ClientModel getClientById(Integer cpf);
     ClientModel getClient(String cpf);
     ClientTelephoneModel saveClientTelephone(ClientTelephoneModel clientTelephone);
     ClientAddressModel saveClientAddress(ClientAddressModel clientAddress);

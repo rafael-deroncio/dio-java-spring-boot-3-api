@@ -2,17 +2,24 @@ package com.bank.core.repositories.interfaces;
 
 import com.bank.core.models.*;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 public interface IBankRepository {
     BankModel saveBank(BankModel bank);
     BankModel getBank();
     AgencyModel saveAgency(AgencyModel agency);
     AgencyAddressModel saveAgencyAddress(AgencyAddressModel agencyAddress);
+    Map<Integer, BigDecimal> getCapitalAccounts();
 
 
     AccountModel saveAccount(AccountModel account);
     AccountModel getAccount(Integer number);
     AccountTransactionModel saveAccountTransaction(AccountTransactionModel account);
     AccountModel getAccountClient(ClientModel client);
+    AccountModel getAccountClient(Integer id);
+    List<AccountModel> getAccountsByAgencyNumber(Integer number);
 
 
     CreditCardModel saveCreditCard(CreditCardModel creditCard);

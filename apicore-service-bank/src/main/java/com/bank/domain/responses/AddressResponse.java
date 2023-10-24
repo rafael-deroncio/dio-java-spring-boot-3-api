@@ -1,6 +1,6 @@
 package com.bank.domain.responses;
 
-public class AddressResponse {
+public class    AddressResponse {
     private String street;
     private String number;
     private String complement;

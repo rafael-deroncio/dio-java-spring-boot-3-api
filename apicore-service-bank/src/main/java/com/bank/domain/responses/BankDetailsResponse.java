@@ -14,9 +14,7 @@ public class BankDetailsResponse {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
     public Date getCreatedDate() {
         return createdDate;
