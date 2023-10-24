@@ -30,20 +30,8 @@ public class ClientRepository implements IClientRepository {
     }
 
     @Override
-    public ClientModel getClient(ClientModel client) {
-        return _clientContextRepository.findById(client.getId()).orElse(null);
-    }
-
-    @Override
     public ClientModel getClient(Integer userId) {
         ClientModel client = this._clientContextRepository.getClientByUserId(userId);
-        client.setAddresses(this._clientAddressContextRepository.getClientAddress(client.getId()));
-        return client;
-    }
-
-    @Override
-    public ClientModel getClient(String cpf) {
-        ClientModel client = this._clientContextRepository.getClientByCpf(cpf);
         client.setAddresses(this._clientAddressContextRepository.getClientAddress(client.getId()));
         return client;
     }

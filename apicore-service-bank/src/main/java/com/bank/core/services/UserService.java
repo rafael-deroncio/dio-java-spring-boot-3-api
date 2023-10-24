@@ -12,7 +12,6 @@ import com.bank.core.utils.FormatterUtil;
 import com.bank.core.utils.PasswordHasherUtils;
 import com.bank.domain.requests.ClientRequest;
 import com.bank.domain.responses.*;
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -201,7 +200,7 @@ public class UserService implements IUserService{
         AccountResponse accountResponse = new AccountResponse();
 
         try {
-            accountResponse = _bankService.gerAccountClient(user.getClient());
+            accountResponse = _bankService.getAccountClient(user.getClient());
         } catch (AccountBusinessRuleException e) {
             accountResponse = null;
         }

@@ -120,7 +120,7 @@ public class BankService implements IBankService {
     }
 
     @Override
-    public AccountResponse gerAccountClient(ClientModel client) {
+    public AccountResponse getAccountClient(ClientModel client) {
         AccountModel account = _bankRepository.getAccountClient(client);
         if (account == null) {
             throw new AccountBusinessRuleException(

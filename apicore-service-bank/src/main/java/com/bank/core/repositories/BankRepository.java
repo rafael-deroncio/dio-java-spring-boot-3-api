@@ -76,7 +76,6 @@ public class BankRepository implements IBankRepository {
         return this._accountContextRepository.getAccountsByAgencyNumber(number);
     }
 
-
     @Override
     public AgencyModel saveAgency(AgencyModel agency) {
         return this._agencyContextRepository.save(agency);
@@ -101,11 +100,6 @@ public class BankRepository implements IBankRepository {
     @Override
     public AccountModel getAccountClient(ClientModel client) {
         return this._accountContextRepository.getAccountByClientId(client.getId());
-    }
-
-    @Override
-    public AccountModel getAccountClient(Integer id) {
-        return this._accountContextRepository.getAccountByClientId(id);
     }
 
     @Override
