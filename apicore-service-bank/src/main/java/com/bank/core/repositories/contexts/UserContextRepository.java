@@ -9,6 +9,13 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface UserContextRepository extends JpaRepository<UserModel, Integer> {
 
-    @Query("SELECT u FROM UserModel u WHERE u.username = :username")
-    UserModel findByUsername(@Param("username") String username);
+    @Query("SELECT u FROM UserModel u " +
+            "JOIN FETCH u.client " +
+            "WHERE u.username = :username")
+    UserModel findUserByUsername(@Param("username") String username);
+
+    @Query("SELECT c FROM UserModel c " +
+            "JOIN FETCH c.client " +
+            "WHERE c.id = :id")
+    UserModel findUserById(@Param("id") Integer id);
 }

@@ -4,6 +4,7 @@ import com.bank.core.models.*;
 import com.bank.core.repositories.BankRepository;
 import com.bank.core.repositories.ClientRepository;
 import com.bank.core.repositories.UserRepository;
+import com.bank.core.utils.PasswordHasherUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,8 @@ public class ApplicationConfiguration {
     UserRepository _userRepository;
     @Autowired
     ClientRepository _clientRepository;
-
+    @Autowired
+    PasswordHasherUtils _passwordHasher;
     public void start() {
         startBank();
         startUser();
@@ -149,7 +151,7 @@ public class ApplicationConfiguration {
     private void startUser() {
         UserModel user = new UserModel();
         user.setUsername("rafael.deroncio");
-        user.setPasswordHash("ffgaoi73wfn7xf");
+        user.setPasswordHash(_passwordHasher.encryptPassword("ffgaoi73wfn7xf"));
 
         ClientModel client = new ClientModel();
         client.setFirstName("Rafael");

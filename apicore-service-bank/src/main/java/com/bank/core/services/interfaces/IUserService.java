@@ -8,5 +8,5 @@ public interface IUserService {
     UserResponse getUser(String username);
     UserResponse getUser(Integer id);
     UserResponse updateUser(Integer id, UserRequest request);
-    Boolean deactivateUser(Integer id);
+    Boolean deleteUser(Integer id);
 }

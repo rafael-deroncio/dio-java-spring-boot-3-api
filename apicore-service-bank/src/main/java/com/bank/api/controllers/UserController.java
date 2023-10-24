@@ -91,6 +91,6 @@ public class UserController {
     public ResponseEntity<Boolean> deleteUser(
             @Parameter(description = "Identifier generated after registration", required = true)
             @PathVariable Integer id) {
-        return ResponseEntity.ok(this._userService.deactivateUser(id));
+        return ResponseEntity.ok(this._userService.deleteUser(id));
     }
 }

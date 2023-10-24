@@ -44,7 +44,9 @@ public class ClientRepository implements IClientRepository {
 
     @Override
     public ClientModel getClient(String cpf) {
-        return null;
+        ClientModel client = this._clientContextRepository.getClientByCpf(cpf);
+        client.setAddresses(this._clientAddressContextRepository.getClientAddress(client.getId()));
+        return client;
     }
 
     @Override

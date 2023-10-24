@@ -14,21 +14,25 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public UserModel saveUser(UserModel user) {
-        return this._userContextRepository.save(user);
+        UserModel newUser = this._userContextRepository.save(user);
+        return newUser;
     }
 
     @Override
     public UserModel getUser(Integer id) {
-        return this._userContextRepository.findById(id).orElse(null);
+        UserModel user = this._userContextRepository.findUserById(id);
+        return user;
     }
 
     @Override
     public UserModel getUser(String username) {
-        return this._userContextRepository.findByUsername(username);
+        UserModel user = this._userContextRepository.findUserByUsername(username);
+        return user;
     }
 
     @Override
-    public UserModel deleteUser(UserModel newUser) {
-        return null;
+    public Boolean deleteUser(UserModel user) {
+        this._userContextRepository.delete(user);
+        return true;
     }
 }

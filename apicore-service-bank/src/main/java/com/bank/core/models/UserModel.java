@@ -25,7 +25,7 @@ public class UserModel {
     @Column(name = "cod_user")
     private int id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "passwordhash", nullable = false)

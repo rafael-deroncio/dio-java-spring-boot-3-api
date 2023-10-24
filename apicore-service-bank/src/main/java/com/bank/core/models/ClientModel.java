@@ -25,13 +25,13 @@ public class ClientModel {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "cpf", nullable = false)
+    @Column(name = "cpf", nullable = false, unique = true)
     private String cpf;
 
     @Column(name = "birth_date", nullable = false)
     private Date birthDate;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @UpdateTimestamp
