@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class ApplicationConfiguration {
+public class StartApplicationConfiguration {
 
     private final Date TODAY = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     @Autowired
@@ -44,6 +44,7 @@ public class ApplicationConfiguration {
         creditCard.setCardNumber("1234567890123456");
         creditCard.setExpiryDate(new Date());
         creditCard.setLimit(new BigDecimal("5000.00"));
+        creditCard.setCvv(000);
 
         CreditCardTransactionModel transaction1 = new CreditCardTransactionModel();
         transaction1.setCreditCard(creditCard);
@@ -65,8 +66,6 @@ public class ApplicationConfiguration {
         creditCard.setCreditCardTransactions(transactionList);
 
         this._bankRepository.saveCreditCard(creditCard);
-        this._bankRepository.saveCreditCardTransaction(transaction1);
-        this._bankRepository.saveCreditCardTransaction(transaction2);
     }
 
     private void startInvestiment() {
@@ -96,8 +95,6 @@ public class ApplicationConfiguration {
         investment.setInvestmentIncomes(incomeList);
 
         this._bankRepository.saveInvestment(investment);
-        this._bankRepository.saveInvestmentIncomes(income1);
-        this._bankRepository.saveInvestmentIncomes(income2);
     }
 
     private void startPix() {
@@ -128,6 +125,7 @@ public class ApplicationConfiguration {
 
     private void startAccount() {
         AccountModel account = new AccountModel();
+        account.setCodBank(999);
         account.setCodClient(999);
         account.setCodAgency(999);
         account.setBalance(new BigDecimal("1000.00"));
@@ -145,7 +143,6 @@ public class ApplicationConfiguration {
         account.setTransactions(transactions);
 
         this._bankRepository.saveAccount(account);
-        this._bankRepository.saveAccountTransaction(transaction);
     }
 
     private void startUser() {
@@ -169,15 +166,19 @@ public class ApplicationConfiguration {
         address.setState("SP");
         address.setZipcode("04257-000");
         address.setClient(client);
+        List<ClientAddressModel> addresses = new ArrayList<>();
+        addresses.add(address);
+        client.setAddresses(addresses);
 
         ClientTelephoneModel telephone = new ClientTelephoneModel();
         telephone.setPhoneNumber("11 9 9933-4455");
         telephone.setClient(client);
+        List<ClientTelephoneModel> telephones = new ArrayList<>();
+        telephones.add(telephone);
+        client.setTelephones(telephones);
 
+        user.setClient(client);
         _userRepository.saveUser(user);
-        _clientRepository.saveClient(client);
-        _clientRepository.saveClientAddress(address);
-        _clientRepository.saveClientTelephone(telephone);
     }
 
     private void startBank() {
@@ -192,11 +193,11 @@ public class ApplicationConfiguration {
         address.setCity("São Paulo");
         address.setState("SP");
         address.setZipcode("01001-000");
-        address.setAgency(agency);
 
+        address.setAgency(agency);
+        agency.setAddress(address);
 
         this._bankRepository.saveBank(bank);
         this._bankRepository.saveAgency(agency);
-        this._bankRepository.saveAgencyAddress(address);
     }
 }

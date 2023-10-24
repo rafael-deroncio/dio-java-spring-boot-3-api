@@ -34,6 +34,8 @@ public interface IBankRepository {
      */
     AgencyModel saveAgency(AgencyModel agency);
 
+    AgencyModel getAgency(Integer number);
+
     /**
      * Saves an agency address in the repository.
      *

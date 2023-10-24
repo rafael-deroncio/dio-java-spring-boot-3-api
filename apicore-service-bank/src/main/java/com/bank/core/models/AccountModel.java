@@ -20,6 +20,9 @@ public class AccountModel {
     @Column(name = "cod_client")
     private Integer codClient;
 
+    @Column(name = "cod_bak")
+    private Integer codBank;
+
     @Column(name = "cod_agency")
     private Integer codAgency;
 
@@ -95,4 +98,11 @@ public class AccountModel {
         this.transactions = transactions;
     }
 
+    public Integer getCodBank() {
+        return codBank;
+    }
+
+    public void setCodBank(Integer codBank) {
+        this.codBank = codBank;
+    }
 }

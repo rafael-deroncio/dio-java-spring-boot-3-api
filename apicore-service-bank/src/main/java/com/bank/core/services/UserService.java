@@ -9,7 +9,7 @@ import com.bank.core.repositories.ClientRepository;
 import com.bank.core.repositories.UserRepository;
 import com.bank.core.responses.CepDetailsResponse;
 import com.bank.core.utils.FormatterUtil;
-import com.bank.core.utils.PasswordHasherUtils;
+import com.bank.core.utils.PasswordHasherUtil;
 import com.bank.domain.requests.ClientRequest;
 import com.bank.domain.responses.*;
 import org.modelmapper.ModelMapper;
@@ -43,7 +43,7 @@ public class UserService implements IUserService{
     FormatterUtil _formatter;
 
     @Autowired
-    PasswordHasherUtils _passwordHasher;
+    PasswordHasherUtil _passwordHasher;
 
     @Autowired
     ViaCepService _viaCepService;
@@ -83,6 +83,11 @@ public class UserService implements IUserService{
 
         userModel.setClient(_clientRepository.getClient(userModel.getId()));
         return getUserResponse(userModel);
+    }
+
+    @Override
+    public UserModel getUserModel(String username) {
+        return _userRepository.getUser(_formatter.formatUsername(username));
     }
 
     @Override

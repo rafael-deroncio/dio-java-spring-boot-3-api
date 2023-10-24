@@ -1,6 +1,6 @@
 package com.bank;
 
-import com.bank.core.configurations.ApplicationConfiguration;
+import com.bank.core.configurations.StartApplicationConfiguration;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.boot.CommandLineRunner;
@@ -20,9 +20,9 @@ public class Application {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ApplicationConfiguration applicationConfiguration) {
+	public CommandLineRunner initData(StartApplicationConfiguration startApplicationConfiguration) {
 		return args -> {
-			applicationConfiguration.start();
+			startApplicationConfiguration.start();
 		};
 	}
 }

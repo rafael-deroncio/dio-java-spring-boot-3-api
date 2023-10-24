@@ -6,19 +6,19 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class NewAccountClientRequest {
-    @NotNull(message = "The 'Id' field cannot be null.")
-    private Integer Id;
+    @NotNull(message = "The 'cpf' field cannot be null.")
+    private String username;
 
     @NotNull(message = "The 'income' field cannot be null.")
     @Positive(message = "The 'income' field must be a positive number.")
     private BigDecimal income;
 
-    public Integer getId() {
-        return Id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(Integer id) {
-        Id = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public BigDecimal getIncome() {

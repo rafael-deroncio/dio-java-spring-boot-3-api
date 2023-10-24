@@ -1,21 +1,7 @@
 package com.bank.core.models;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -39,6 +25,9 @@ public class CreditCardModel {
 
     @Column(name = "expiry_date")
     private Date expiryDate;
+
+    @Column(name = "cvv")
+    private Integer cvv;
 
     @Column(name = "credit_limit", scale = 2, precision = 13)
     private BigDecimal limit;
@@ -120,4 +109,11 @@ public class CreditCardModel {
         this.creditCardTransactions = creditCardTransactions;
     }
 
+    public Integer getCvv() {
+        return cvv;
+    }
+
+    public void setCvv(Integer cvv) {
+        this.cvv = cvv;
+    }
 }

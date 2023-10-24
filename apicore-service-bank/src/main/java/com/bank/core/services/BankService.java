@@ -148,8 +148,12 @@ public class BankService implements IBankService {
         CreditCardResponse creditCard = new CreditCardResponse();
         CreditCardModel creditCardModel = _bankRepository.getCreditCardAccount(account.getId());
 
+        if (creditCardModel == null) {
+            return creditCard;
+        }
+
         List<TransactionResponse> trasactions = new ArrayList<>();
-        for (AccountTransactionModel transactionModel: account.getTransactions()) {
+        for (CreditCardTransactionModel transactionModel: creditCardModel.getCreditCardTransactions()) {
             TransactionResponse transactionResponse = new TransactionResponse();
             transactionResponse.setDate(transactionModel.getCreatedDate());
             transactionResponse.setDescription(transactionModel.getDescription());
@@ -158,14 +162,16 @@ public class BankService implements IBankService {
 
             trasactions.add(transactionResponse);
         }
+
         creditCard.setNumber(_formatter.formatCreditCardNumber(creditCardModel.getCardNumber()));
         creditCard.setLimit(creditCardModel.getLimit());
         creditCard.setExpires(_formatter.formatExpyresDate(creditCardModel.getExpiryDate()));
-        creditCard.setNumber(_formatter.formatCreditCardNumber(creditCardModel.getCardNumber()));
+        creditCard.setAvaliableLimit(creditCardModel.getLimit());
+        creditCard.setTransactions(trasactions);
 
         BigDecimal avaliableLimit = calculateAvailableLimit(creditCardModel.getLimit(), trasactions);
         creditCard.setAvaliableLimit(avaliableLimit);
-        creditCard.setTransactions(trasactions);
+
         return creditCard;
     }
 

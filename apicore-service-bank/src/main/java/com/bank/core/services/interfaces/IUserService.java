@@ -1,5 +1,6 @@
 package com.bank.core.services.interfaces;
 
+import com.bank.core.models.UserModel;
 import com.bank.domain.requests.UserRequest;
 import com.bank.domain.responses.UserResponse;
 
@@ -31,6 +32,14 @@ public interface IUserService {
      * @return A response with user details for the specified ID.
      */
     UserResponse getUser(Integer id);
+
+    /**
+     * Retrieves a user by their unique ID.
+     *
+     * @param username The unique username of the user to retrieve.
+     * @return A model with user details for the specified username.
+     */
+    UserModel getUserModel(String username);
 
     /**
      * Updates user information based on the provided user request.

@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class BankRepository implements IBankRepository {
@@ -82,6 +84,11 @@ public class BankRepository implements IBankRepository {
     }
 
     @Override
+    public AgencyModel getAgency(Integer number) {
+        return this._agencyContextRepository.findById(number).orElse(null);
+    }
+
+    @Override
     public AgencyAddressModel saveAgencyAddress(AgencyAddressModel agencyAddress) {
         return this._agencyAddressContextRepository.save(agencyAddress);
     }
@@ -114,7 +121,10 @@ public class BankRepository implements IBankRepository {
 
     @Override
     public CreditCardModel getCreditCardAccount(Integer accountNumber) {
-        return _creditCardContextRepository.findByAccountNumber(accountNumber);
+        return _creditCardContextRepository.findAll()
+                .stream()
+                .filter(credit -> credit.getAccount().getId() == accountNumber.intValue())
+                .findFirst().orElse(null);
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * Utility class for encrypting and verifying passwords using the BCrypt hashing algorithm.
  */
 @Component
-public class PasswordHasherUtils {
+public class PasswordHasherUtil {
 
     /**
      * Encrypts a plaintext password using the BCrypt hashing algorithm.
