@@ -50,21 +50,23 @@ public class UserService implements IUserService{
 
     @Override
     public UserResponse createUser(UserRequest request) {
-    try {
-        String cpf = _formatter.formatCpf(request.getClientDetails().getCpfDocument());
-        String username = _formatter.formatUsername(request.getUsername());
+        try {
+            String cpf = _formatter.formatCpf(request.getClientDetails().getCpfDocument());
+            String username = _formatter.formatUsername(request.getUsername());
 
-        request.setUsername(username);
-        ClientRequest clientDetails = request.getClientDetails();
-        clientDetails.setCpfDocument(cpf);
-        request.setClientDetails(clientDetails);
+            request.setUsername(username);
+            ClientRequest clientDetails = request.getClientDetails();
+            clientDetails.setCpfDocument(cpf);
+            request.setClientDetails(clientDetails);
 
-        return saveUser(request);
+            return saveUser(request);
 
-    }catch (DataIntegrityViolationException e) {
-        throw new UserBusinessRuleException(
-            String.format("username '%s' or cpf '%s' are already registered", request.getUsername(), request.getClientDetails().getCpfDocument()),
-            HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        } catch (DataIntegrityViolationException e) {
+            throw new UserBusinessRuleException(
+                    String.format("username '%s' or cpf '%s' are already registered", request.getUsername(), request.getClientDetails().getCpfDocument()),
+                    HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -174,6 +176,7 @@ public class UserService implements IUserService{
         newUser.setPasswordHash(_passwordHasher.encryptPassword(request.getPassword().trim()));
 
         ClientModel newClient = _mapper.map(request.getClientDetails(), ClientModel.class);
+        newClient.setEmail(_formatter.formatAndValidateEmail(request.getClientDetails().getEmail()));
         newClient.setCpf(request.getClientDetails().getCpfDocument());
 
         List<ClientTelephoneModel> telephones = getNewClientTelephones(request, newClient);
