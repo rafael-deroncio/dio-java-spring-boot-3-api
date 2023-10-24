@@ -11,8 +11,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+/**
+ * Utility class for formatting and validating various types of data.
+ */
 @Component
 public class FormatterUtil {
+
+    /**
+     * Formats a CPF (Cadastro de Pessoas Físicas) number by removing non-numeric characters,
+     * adding leading zeros, and checking for a valid length.
+     *
+     * @param cpf The CPF to be formatted.
+     * @return The formatted CPF.
+     * @throws UserBusinessRuleException if the CPF is not valid.
+     */
     public String formatCpf(String cpf) {
         cpf = cpf.trim().replaceAll("[^0-9]", "");
 
@@ -31,12 +43,23 @@ public class FormatterUtil {
         throw new UserBusinessRuleException(String.format("cpf '%s' is not valid!", cpf), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
     }
 
-
-
+    /**
+     * Formats a username by trimming and converting it to lowercase.
+     *
+     * @param username The username to be formatted.
+     * @return The formatted username.
+     */
     public String formatUsername(String username) {
         return username.trim().toLowerCase();
     }
 
+    /**
+     * Formats a telephone number by removing non-numeric characters, adjusting its length,
+     * and ensuring it's a valid length.
+     *
+     * @param telephone The telephone number to be formatted.
+     * @return The formatted telephone number.
+     */
     public String formatTelephone(String telephone) {
         String numericOnly = telephone.replaceAll("[^0-9]", "");
         int length = numericOnly.length();
@@ -50,7 +73,14 @@ public class FormatterUtil {
         return numericOnly;
     }
 
-
+    /**
+     * Formats and validates an email address by trimming, converting it to lowercase,
+     * and checking for a valid email format.
+     *
+     * @param email The email address to be formatted and validated.
+     * @return The formatted and validated email address.
+     * @throws UserBusinessRuleException if the email is not valid.
+     */
     public String formatAndValidateEmail(String email) {
         if (email == null || !EmailValidator.getInstance().isValid(email)) {
             throw new UserBusinessRuleException(String.format("Email '%s' is not valid!", email), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
@@ -58,7 +88,14 @@ public class FormatterUtil {
         return email.trim().toLowerCase();
     }
 
-
+    /**
+     * Formats a CEP (Código de Endereçamento Postal) by removing non-numeric characters,
+     * ensuring it has a valid format, and returning it without hyphens.
+     *
+     * @param cep The CEP to be formatted.
+     * @return The formatted CEP without hyphens.
+     * @throws ClientBusinessRuleException if the CEP is not in a valid format.
+     */
     public String fortamtCep(String cep) {
         cep = cep.trim().replace("-", "");
         cep = String.format("%08d", Integer.parseInt(cep));
@@ -71,11 +108,23 @@ public class FormatterUtil {
         }
     }
 
+    /**
+     * Formats a Date object as a string in "MM/yy" (month/year) format.
+     *
+     * @param data The Date object to be formatted.
+     * @return The formatted date string.
+     */
     public String formatExpyresDate(Date data) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/yy");
         return sdf.format(data);
     }
 
+    /**
+     * Masks a credit card number, showing only the last four digits.
+     *
+     * @param creditCardNumber The credit card number to be masked.
+     * @return The masked credit card number.
+     */
     public String formatCreditCardNumber(String creditCardNumber) {
         int length = creditCardNumber.length();
 

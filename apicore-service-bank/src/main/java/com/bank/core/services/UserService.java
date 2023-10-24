@@ -126,6 +126,13 @@ public class UserService implements IUserService{
                 user.setClient(client);
             }
 
+            String email = _formatter.formatAndValidateEmail(request.getClientDetails().getEmail());
+            if (user.getClient().getEmail() != email) {
+                ClientModel client = user.getClient();
+                client.setEmail(email);
+                user.setClient(client);
+            }
+
             ClientModel client = user.getClient();
             client.setCpf(request.getClientDetails().getCpfDocument());
 
