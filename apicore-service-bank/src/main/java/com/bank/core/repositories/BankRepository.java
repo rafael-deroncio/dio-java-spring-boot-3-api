@@ -115,6 +115,11 @@ public class BankRepository implements IBankRepository {
     }
 
     @Override
+    public AccountModel getAccount(Integer agencyNumber, Integer accountNumber) {
+        return this._accountContextRepository.getAccount(agencyNumber, accountNumber);
+    }
+
+    @Override
     public CreditCardModel saveCreditCard(CreditCardModel creditCard) {
         return this._creditCardContextRepository.save(creditCard);
     }

@@ -5,7 +5,6 @@ import com.bank.core.exceptions.AccountBusinessRuleException;
 import com.bank.core.exceptions.ClientBusinessRuleException;
 import com.bank.core.exceptions.UserBusinessRuleException;
 import com.bank.core.models.*;
-import com.bank.core.repositories.ClientRepository;
 import com.bank.core.repositories.UserRepository;
 import com.bank.core.responses.CepDetailsResponse;
 import com.bank.core.utils.FormatterUtil;
@@ -31,7 +30,7 @@ public class UserService implements IUserService{
     UserRepository _userRepository;
 
     @Autowired
-    ClientRepository _clientRepository;
+    ClientService _clientService;
 
     @Autowired
     BankService _bankService;
@@ -81,7 +80,7 @@ public class UserService implements IUserService{
                     HttpStatus.BAD_REQUEST, ErrorResponseType.Error);
         }
 
-        userModel.setClient(_clientRepository.getClient(userModel.getId()));
+        userModel.setClient(_clientService.getClient(userModel.getId()));
         return getUserResponse(userModel);
     }
 
@@ -100,7 +99,7 @@ public class UserService implements IUserService{
                     HttpStatus.BAD_REQUEST, ErrorResponseType.Error);
         }
 
-        userModel.setClient(_clientRepository.getClient(userModel.getId()));
+        userModel.setClient(_clientService.getClient(userModel.getId()));
 
         return getUserResponse(userModel);
     }

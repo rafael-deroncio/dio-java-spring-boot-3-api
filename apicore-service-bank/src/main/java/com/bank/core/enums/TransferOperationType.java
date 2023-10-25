@@ -4,5 +4,4 @@ public enum TransferOperationType {
     INITIAL_DEPOSIT,
     TRANSFER,
     PIX,
-    INVESTMENT
 }

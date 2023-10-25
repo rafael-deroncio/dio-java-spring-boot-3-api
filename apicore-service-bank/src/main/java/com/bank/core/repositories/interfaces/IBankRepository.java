@@ -83,6 +83,8 @@ public interface IBankRepository {
      */
     AccountModel getAccountClient(ClientModel client);
 
+    AccountModel getAccount(Integer agencyNumber, Integer accountNumber);
+
     /**
      * Retrieves a list of accounts by agency number.
      *

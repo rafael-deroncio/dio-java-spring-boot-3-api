@@ -4,6 +4,7 @@ import com.bank.core.models.*;
 import com.bank.core.repositories.BankRepository;
 import com.bank.core.repositories.ClientRepository;
 import com.bank.core.repositories.UserRepository;
+import com.bank.core.utils.FormatterUtil;
 import com.bank.core.utils.PasswordHasherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,12 @@ import java.util.List;
 
 @Service
 public class StartApplicationConfiguration {
-
-    private final Date TODAY = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+    @Autowired
+    FormatterUtil _formatter;
     @Autowired
     BankRepository _bankRepository;
     @Autowired
     UserRepository _userRepository;
-    @Autowired
-    ClientRepository _clientRepository;
     @Autowired
     PasswordHasherUtil _passwordHasher;
     public void start() {
@@ -48,14 +47,14 @@ public class StartApplicationConfiguration {
 
         CreditCardTransactionModel transaction1 = new CreditCardTransactionModel();
         transaction1.setCreditCard(creditCard);
-        transaction1.setTransactionDate(this.TODAY);
+        transaction1.setTransactionDate(this._formatter.getTodayDate());
         transaction1.setAmount(new BigDecimal("100.00"));
         transaction1.setDescription("Compra em loja");
         transaction1.setLocality("Cidade A");
 
         CreditCardTransactionModel transaction2 = new CreditCardTransactionModel();
         transaction2.setCreditCard(creditCard);
-        transaction2.setTransactionDate(this.TODAY);
+        transaction2.setTransactionDate(this._formatter.getTodayDate());
         transaction2.setAmount(new BigDecimal("50.00"));
         transaction2.setDescription("Restaurante");
         transaction2.setLocality("Cidade B");
@@ -75,17 +74,17 @@ public class StartApplicationConfiguration {
         investment.setAccount(account);
         investment.setNameInvestment("Meu Investimento");
         investment.setAmount(new BigDecimal("500.00"));
-        investment.setStartDate(this.TODAY);
+        investment.setStartDate(this._formatter.getTodayDate());
 
         InvestmentIncomesModel income1 = new InvestmentIncomesModel();
         income1.setInvestment(investment);
-        income1.setIncomeDate(this.TODAY);
+        income1.setIncomeDate(this._formatter.getTodayDate());
         income1.setAmount(new BigDecimal("250.00"));
         income1.setDescription("Rendimento mensal");
 
         InvestmentIncomesModel income2 = new InvestmentIncomesModel();
         income2.setInvestment(investment);
-        income2.setIncomeDate(this.TODAY);
+        income2.setIncomeDate(this._formatter.getTodayDate());
         income2.setAmount(new BigDecimal("250.00"));
         income2.setDescription("Rendimento mensal");
 
@@ -113,7 +112,7 @@ public class StartApplicationConfiguration {
         PixTransactionModel pixTransaction = new PixTransactionModel();
         pixTransaction.setPixKeyDestination("teste.teste@example.com");
         pixTransaction.setPixKeyTypeDestination("EMAIL");
-        pixTransaction.setTransactionDate(this.TODAY);
+        pixTransaction.setTransactionDate(this._formatter.getTodayDate());
         pixTransaction.setAmount(BigDecimal.valueOf(100.00));
         pixTransaction.setDescription("testing method");
         pixTransaction.setPix(pix);
@@ -133,8 +132,8 @@ public class StartApplicationConfiguration {
         List<AccountTransactionModel> transactions = new ArrayList<>();
         AccountTransactionModel transaction = new AccountTransactionModel();
         transaction.setAccount(account);
-        transaction.setTransactionDate(this.TODAY);
-        transaction.setAmount(new BigDecimal("100.00"));
+        transaction.setTransactionDate(this._formatter.getTodayDate());
+        transaction.setAmount(new BigDecimal("1000.00"));
         transaction.setDescription("Depósito inicial");
         transaction.setLocality("Localidade 1");
         transactions.add(transaction);

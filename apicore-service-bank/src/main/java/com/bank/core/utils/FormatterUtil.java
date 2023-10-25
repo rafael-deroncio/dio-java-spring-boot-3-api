@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,8 @@ import java.util.regex.Pattern;
  */
 @Component
 public class FormatterUtil {
+
+    private final Date TODAY = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
 
     /**
      * Formats a CPF (Cadastro de Pessoas Físicas) number by removing non-numeric characters,
@@ -135,5 +139,9 @@ public class FormatterUtil {
         } else {
             return creditCardNumber;
         }
+    }
+
+    public Date getTodayDate() {
+        return TODAY;
     }
 }

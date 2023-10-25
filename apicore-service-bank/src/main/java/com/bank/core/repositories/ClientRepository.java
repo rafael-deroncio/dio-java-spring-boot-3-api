@@ -21,14 +21,6 @@ public class ClientRepository implements IClientRepository {
     @Autowired
     ClientAddressContextRepository _clientAddressContextRepository;
 
-    @Autowired
-    ClientTelephoneContextRepository _clientTelephoneContextRepository;
-
-    @Override
-    public ClientModel saveClient(ClientModel client) {
-        return this._clientContextRepository.save(client);
-    }
-
     @Override
     public ClientModel getClient(Integer userId) {
         ClientModel client = this._clientContextRepository.getClientByUserId(userId);
@@ -41,15 +33,5 @@ public class ClientRepository implements IClientRepository {
         ClientModel client = this._clientContextRepository.getClient(id);
         client.setAddresses(this._clientAddressContextRepository.getClientAddress(id));
         return client;
-    }
-
-    @Override
-    public ClientTelephoneModel saveClientTelephone(ClientTelephoneModel clientTelephone) {
-        return this._clientTelephoneContextRepository.save(clientTelephone);
-    }
-
-    @Override
-    public ClientAddressModel saveClientAddress(ClientAddressModel clientAddress) {
-        return this._clientAddressContextRepository.save(clientAddress);
     }
 }

@@ -10,14 +10,6 @@ import com.bank.core.models.ClientTelephoneModel;
 public interface IClientRepository {
 
     /**
-     * Saves a client record in the repository.
-     *
-     * @param client The client model to be saved.
-     * @return The saved client model.
-     */
-    ClientModel saveClient(ClientModel client);
-
-    /**
      * Retrieves a client by user ID.
      *
      * @param userId The unique user ID of the client.
@@ -33,20 +25,5 @@ public interface IClientRepository {
      */
     ClientModel getClientById(Integer cpf);
 
-    /**
-     * Saves a client's telephone information in the repository.
-     *
-     * @param clientTelephone The client telephone model to be saved.
-     * @return The saved client telephone model.
-     */
-    ClientTelephoneModel saveClientTelephone(ClientTelephoneModel clientTelephone);
-
-    /**
-     * Saves a client's address information in the repository.
-     *
-     * @param clientAddress The client address model to be saved.
-     * @return The saved client address model.
-     */
-    ClientAddressModel saveClientAddress(ClientAddressModel clientAddress);
 }
 

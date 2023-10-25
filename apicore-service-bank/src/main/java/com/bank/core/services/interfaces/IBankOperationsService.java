@@ -22,11 +22,12 @@ public interface IBankOperationsService {
     /**
      * Transfers money from one account to another.
      *
+     * @param agencyNumber The agency number from which the money will be transferred.
      * @param accountNumber The account number from which the money will be transferred.
      * @param request       The request containing information about the money transfer.
      * @return A response with details of the money transfer operation.
      */
-    MoneyTransferResponse moneyTransfer(Integer accountNumber, MoneyTransferRequest request);
+    MoneyTransferResponse moneyTransfer(Integer agencyNumber, Integer accountNumber, MoneyTransferRequest request);
 
     /**
      * Performs a PIX transfer from the specified account.

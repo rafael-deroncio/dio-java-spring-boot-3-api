@@ -71,5 +71,4 @@ public class AgencyModel {
     public void setAddress(AgencyAddressModel address) {
         this.address = address;
     }
-
 }

@@ -1,5 +1,6 @@
 package com.bank.core.services.interfaces;
 
+import com.bank.core.models.ClientModel;
 import com.bank.core.models.UserModel;
 import com.bank.domain.requests.UserRequest;
 import com.bank.domain.responses.UserResponse;
