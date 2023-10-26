@@ -9,8 +9,6 @@ RESTful API da Santander Dev Week 2023 construída em Java 21 com Spring Boot 3.
  - **OpenAPI (Swagger)**: Vamos criar uma documentação de API eficaz e fácil de entender usando a OpenAPI (Swagger), perfeitamente alinhada com a alta produtividade que o Spring Boot oferece;
  - **Railway**: Facilita o deploy e monitoramento de nossas soluções na nuvem, além de oferecer diversos bancos de dados como serviço e pipelines de CI/CD.
  - **MapperModel**: Utilizaremos a biblioteca MapperModel para mapear objetos entre diferentes camadas da aplicação de forma eficiente;
- - **JUnit 5**: Faremos uso do JUnit 5 para escrever testes unitários robustos que garantam a qualidade do nosso código;
- - **Mockito**: Com o Mockito, poderemos criar mocks de objetos e simular comportamentos, facilitando a escrita de testes de unidade mais abrangentes e eficazes.
 
 ## Abstração do domínio 
 [Figma](https://www.figma.com/file/cdryxczFtFlledgPmqmXr1/Aplicativo-Banco-Community?type=design&mode=design&t=zSFbowLuxkJkvYhk-1)   
