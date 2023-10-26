@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -143,5 +144,15 @@ public class FormatterUtil {
 
     public Date getTodayDate() {
         return TODAY;
+    }
+
+    public Date combineDateAndMonthYear(String monthYear) {
+        int day = LocalDate.now().getDayOfMonth();
+        int month = Integer.parseInt(monthYear.split("/")[0]);
+        int year = Integer.parseInt(monthYear.split("/")[1]);
+
+        LocalDate localDate = LocalDate.of(year, month, day);
+
+        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
 }

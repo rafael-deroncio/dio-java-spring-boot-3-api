@@ -41,12 +41,5 @@ public interface IBankOperationsService {
      */
     PixTransferResponse pixTransfer(Integer agencyNumber, Integer accountNumber, PixTransferRequest request);
 
-    /**
-     * Initiates a new investment for the specified account.
-     *
-     * @param accountNumber The account number for which the investment will be initiated.
-     * @param request       The request containing information for the new investment.
-     * @return A response with details of the newly initiated investment.
-     */
-    NewInvestmentResponse invest(Integer accountNumber, NewInvestmentRequest request);
+    NewInvestmentResponse invest(Integer agencyNumber, Integer accountNumber, NewInvestmentRequest request);
 }

@@ -5,15 +5,16 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Random;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 @Component
 public class BankOperationsUtil {
     private static final BigDecimal BASE_LIMIT = new BigDecimal("1000.00");
     private static final BigDecimal INCOME_MULTIPLIER = new BigDecimal("0.05");
     private static final BigDecimal SCORE_MULTIPLIER = new BigDecimal("0.1");
+    private static  final BigDecimal INVEST_AM_TAX = new BigDecimal("0.99");
 
     private static final Integer EXPIRES_YEAR = 3;
     private static final String MODEL_EXPIRES = "MM/yyyy";
@@ -63,4 +64,28 @@ public class BankOperationsUtil {
 
         return expiryDate;
     }
+
+    public List<Map<String, BigDecimal>> generateMonthlyValues(BigDecimal initialValue) {
+        List<Map<String, BigDecimal>> valuesList = new ArrayList<>();
+        BigDecimal accumulatedValue = initialValue;
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter yearMonthFormat = DateTimeFormatter.ofPattern("MM/yyyy");
+
+        for (int i = 1; i <= 12; i++) {
+            String monthYear = currentDate.format(yearMonthFormat);
+
+            Map<String, BigDecimal> item = new HashMap<>();
+            item.put(monthYear, accumulatedValue);
+            valuesList.add(item);
+
+            accumulatedValue = accumulatedValue.add(INVEST_AM_TAX);
+
+            currentDate = currentDate.plusMonths(1);
+        }
+
+        return valuesList;
+    }
+
+    public BigDecimal getGlobalInvestmentTax() { return this.INVEST_AM_TAX; }
 }

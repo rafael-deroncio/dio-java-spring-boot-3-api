@@ -1,11 +1,14 @@
 package com.bank.domain.responses;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 public class NewInvestmentResponse {
     private BigDecimal Value;
     private String nameInvestment;
-    private Double monthlyFee;
+    private BigDecimal monthlyFee;
+    private List<Map<String, BigDecimal>> forecastsReturn;
 
     public BigDecimal getValue() {
         return Value;
@@ -23,11 +26,19 @@ public class NewInvestmentResponse {
         this.nameInvestment = nameInvestment;
     }
 
-    public Double getMonthlyFee() {
+    public BigDecimal getMonthlyFee() {
         return monthlyFee;
     }
 
-    public void setMonthlyFee(Double monthlyFee) {
+    public void setMonthlyFee(BigDecimal monthlyFee) {
         this.monthlyFee = monthlyFee;
+    }
+
+    public List<Map<String, BigDecimal>> forecastsReturn() {
+        return forecastsReturn;
+    }
+
+    public void setForecastReturn(List<Map<String, BigDecimal>> forecastsReturn) {
+        this.forecastsReturn = forecastsReturn;
     }
 }

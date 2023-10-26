@@ -3,10 +3,7 @@ package com.bank.core.services;
 import com.bank.core.enums.ErrorResponseType;
 import com.bank.core.enums.PixKeyType;
 import com.bank.core.enums.TransferOperationType;
-import com.bank.core.exceptions.AccountBusinessRuleException;
-import com.bank.core.exceptions.AgencyBusinessRuleException;
-import com.bank.core.exceptions.PixBusinessRuleException;
-import com.bank.core.exceptions.UserBusinessRuleException;
+import com.bank.core.exceptions.*;
 import com.bank.core.models.*;
 import com.bank.core.repositories.BankRepository;
 import com.bank.core.services.interfaces.IBankOperationsService;
@@ -24,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BankOperationsService implements IBankOperationsService {
@@ -41,6 +39,8 @@ public class BankOperationsService implements IBankOperationsService {
     BankOperationsUtil _bankUtils;
     @Autowired
     ModelMapper _mapper;
+    @Autowired
+    BankOperationsUtil _bankOperationsUtil;
 
     @Override
     public NewAccountResponse openAccount(Integer agencyNumber, NewAccountRequest request) {
@@ -175,8 +175,101 @@ public class BankOperationsService implements IBankOperationsService {
     }
 
     @Override
-    public NewInvestmentResponse invest(Integer accountNumber, NewInvestmentRequest request) {
-        return null;
+    public NewInvestmentResponse invest(Integer agencyNumber, Integer accountNumber, NewInvestmentRequest request) {
+        if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvestimentBusinessRuleException("the value cannot be negative",
+                    HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+
+        // TODO: Account Source
+        AccountModel account = _bankRepository.getAccount(agencyNumber, accountNumber);
+        if (account == null) {
+            throw new InvestimentBusinessRuleException(
+                    String.format("origin account not found with 'account number: %s' and 'agency number: %s'",
+                            accountNumber, agencyNumber), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+
+        if (account.getBalance().compareTo(request.getAmount()) < 0) {
+            throw new AccountBusinessRuleException("insufficient balance for the invest",
+                    HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+
+        InvestmentModel investment = getInvestmentModel(request, account);
+        List<InvestmentIncomesModel> investmentIncomes = getInvestmentIncomesModels(request, investment);
+        investment.setInvestmentIncomes(investmentIncomes);
+
+        BigDecimal balance = account.getBalance();
+        BigDecimal newBalance = balance.subtract(request.getAmount());
+
+        List<AccountTransactionModel> transactions = account.getTransactions();
+        AccountTransactionModel transaction = new AccountTransactionModel();
+        transaction.setAmount(investment.getAmount().negate());
+        transaction.setTransactionDate(investment.getStartDate());
+        transaction.setLocality(investment.getNameInvestment());
+        transaction.setDescription(
+                String.format("INCOME %s FORECAST %s TAX %s A.A",
+                        investment.getNameInvestment(),
+                        getForecastValue(investmentIncomes),
+                        _bankOperationsUtil.getGlobalInvestmentTax()));
+
+        transaction.setAccount(account);
+        transactions.add(transaction);
+
+        account.setTransactions(transactions);
+        account.setBalance(newBalance);
+
+        _bankRepository.saveInvestment(investment);
+        _bankRepository.saveAccount(account);
+        _bankRepository.saveAccountTransaction(transaction);
+
+        return getNewInvestmentResponse(request, investment);
+    }
+
+    private NewInvestmentResponse getNewInvestmentResponse(NewInvestmentRequest request, InvestmentModel investment) {
+        NewInvestmentResponse response = new NewInvestmentResponse();
+        response.setNameInvestment(investment.getNameInvestment());
+        response.setValue(investment.getAmount());
+        response.setForecastReturn(_bankOperationsUtil.generateMonthlyValues(request.getAmount()));
+        response.setMonthlyFee(_bankOperationsUtil.getGlobalInvestmentTax());
+
+        return response;
+    }
+
+    private BigDecimal getForecastValue(List<InvestmentIncomesModel> investmentIncomes) {
+        BigDecimal forecastValue = BigDecimal.ZERO;
+        for (InvestmentIncomesModel income : investmentIncomes) {
+            forecastValue = forecastValue.add(income.getAmount());
+        }
+        return forecastValue;
+    }
+
+    private InvestmentModel getInvestmentModel(NewInvestmentRequest request, AccountModel account) {
+        InvestmentModel  investment = new InvestmentModel();
+        investment.setAccount(account);
+        investment.setNameInvestment(request.getNameInvestment().trim().toUpperCase());
+        investment.setAmount(request.getAmount());
+        investment.setStartDate(_formatter.getTodayDate());
+        return investment;
+    }
+
+    private List<InvestmentIncomesModel> getInvestmentIncomesModels(NewInvestmentRequest request, InvestmentModel investment) {
+        List<InvestmentIncomesModel> investmentIncomes = new ArrayList<>();
+
+        for (Map<String, BigDecimal> item : _bankOperationsUtil.generateMonthlyValues(request.getAmount())) {
+            for (Map.Entry<String, BigDecimal> entry : item.entrySet()) {
+                InvestmentIncomesModel income = new InvestmentIncomesModel();
+                income.setInvestment(investment);
+                income.setAmount(entry.getValue());
+                income.setDescription(
+                        String.format("INCOME %s FORECAST %s TAX %s A.A",
+                                investment.getNameInvestment(),
+                                _formatter.combineDateAndMonthYear(entry.getKey()),
+                                _bankOperationsUtil.getGlobalInvestmentTax()));
+                income.setIncomeDate(income.getCreatedDate());
+                investmentIncomes.add(income);
+            }
+        }
+        return investmentIncomes;
     }
 
     private TransferResponse transfer(AccountModel origin, AccountModel destiny, BigDecimal value, TransferOperationType transferOperationType) {
