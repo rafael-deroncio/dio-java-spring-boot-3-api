@@ -88,6 +88,6 @@ classDiagram
 ```
 
 ## Documentação da API
-[Swagger](#app/swagger-ui.html)    
+[Swagger](https://api-devbank-prd.up.railway.app/swagger-ui/index.html)    
 O Swagger foi utilizado para a documentação e testes desta API.
 
