@@ -9,10 +9,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
+import org.springframework.core.env.Environment;
+
+import java.util.Objects;
+
 @SpringBootApplication
 @EnableFeignClients
 @OpenAPIDefinition(servers = {@Server(url = "/", description = "Default server Url")})
 public class Application {
+
+	private final Environment environment; // Injete o Environment
+
+	public Application(Environment environment) {
+		this.environment = environment;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -22,7 +32,9 @@ public class Application {
 	@Bean
 	public CommandLineRunner initData(StartApplicationConfiguration startApplicationConfiguration) {
 		return args -> {
-			startApplicationConfiguration.start();
+			if (Objects.equals(environment.getProperty("SPRING_PROFILES_ACTIVE"), "dev")) {
+				startApplicationConfiguration.start();
+			}
 		};
 	}
 }
