@@ -38,9 +38,6 @@ public class PixModel {
     @OneToMany(mappedBy = "pix", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PixDetailModel> pixDetails;
 
-    @OneToMany(mappedBy = "pix", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<PixTransactionModel> pixTransactions;
-
     public Integer getId() {
         return id;
     }
@@ -95,13 +92,5 @@ public class PixModel {
 
     public void setPixDetails(List<PixDetailModel> pixDetails) {
         this.pixDetails = pixDetails;
-    }
-
-    public List<PixTransactionModel> getPixTransactions() {
-        return pixTransactions;
-    }
-
-    public void setPixTransactions(List<PixTransactionModel> pixTransactions) {
-        this.pixTransactions = pixTransactions;
     }
 }

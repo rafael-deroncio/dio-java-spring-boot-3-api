@@ -13,4 +13,10 @@ public interface PixContextRepository extends JpaRepository<PixModel, Integer> {
             "AND p.codAccount = :codAccount")
     PixModel findByAccount(@Param("codAgency") Integer codAgency, @Param("codAccount") Integer codAccount);
 
+    @Query("SELECT p FROM PixModel p " +
+            "JOIN FETCH p.pixDetails d " +
+            "WHERE d.pixKey = :key")
+    PixModel findBykey(@Param("key") String key);
+
+
 }

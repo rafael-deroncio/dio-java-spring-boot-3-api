@@ -145,6 +145,11 @@ public class BankRepository implements IBankRepository {
     public PixModel getPixDetails(AccountModel account) {
         return this._pixContextRepository.findByAccount(account.getCodAgency().intValue(), account.getId().intValue());
     }
+
+    @Override
+    public PixModel getPixDetails(String key) {
+        return this._pixContextRepository.findBykey(key);
+    }
     @Override
     public PixDetailModel savePixDetail(PixDetailModel PixDetail) {
         return this._pixDetailContextRepository.save(PixDetail);

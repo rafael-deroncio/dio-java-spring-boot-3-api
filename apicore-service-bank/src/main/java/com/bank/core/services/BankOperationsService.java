@@ -16,16 +16,13 @@ import com.bank.domain.requests.MoneyTransferRequest;
 import com.bank.domain.requests.NewAccountRequest;
 import com.bank.domain.requests.PixTransferRequest;
 import com.bank.domain.responses.*;
-import org.apache.catalina.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,17 +31,16 @@ public class BankOperationsService implements IBankOperationsService {
     FormatterUtil _formatter;
     @Autowired
     ClientService _clientService;
-
     @Autowired
     BankService _bankService;
-
     @Autowired
     UserService _userService;
-
     @Autowired
     BankRepository _bankRepository;
     @Autowired
     BankOperationsUtil _bankUtils;
+    @Autowired
+    ModelMapper _mapper;
 
     @Override
     public NewAccountResponse openAccount(Integer agencyNumber, NewAccountRequest request) {
@@ -136,7 +132,9 @@ public class BankOperationsService implements IBankOperationsService {
         }
 
         // TODO: Transfer
-        return transfer(origin, destiny, request.getValue(), TransferOperationType.TRANSFER);
+        return _mapper.map(
+                transfer(origin, destiny, request.getValue(), TransferOperationType.TRANSFER),
+                MoneyTransferResponse.class);
     }
 
     @Override
@@ -155,19 +153,25 @@ public class BankOperationsService implements IBankOperationsService {
         }
 
         PixModel pixOrigin = _bankRepository.getPixDetails(origin);
+        if (pixOrigin.getPixDetails().isEmpty()) {
+            throw new PixBusinessRuleException(
+                    String.format("origin account 'account number: %s' and 'agency number: %s' does not contain pix key data",
+                            accountNumber, agencyNumber), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
 
+        PixModel pixDestiny = _bankRepository.getPixDetails(request.getKey().trim().toLowerCase());
+        if (pixDestiny == null)
+            if (pixOrigin.getPixDetails().isEmpty()) {
+                throw new PixBusinessRuleException(
+                        String.format("pix key '%s' not found",
+                                accountNumber, agencyNumber), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+            }
+        AccountModel destiny = _bankRepository.getAccount(pixDestiny.getCodAgency(), pixDestiny.getCodAccount());
 
-
-//        // TODO: Account Destiny
-//        AccountModel destiny = _bankRepository.getAccount(request.getAgencyNumber(), request.getAccountNumber());
-//        if (destiny == null) {
-//            throw new AccountBusinessRuleException(
-//                    String.format("account destiny not found with 'account number: %s' and 'agency number: %s'",
-//                            request.getAgencyNumber(), request.getAccountNumber()), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
-//        }
-//
-//        // TODO: Transfer
-        return null;
+        // TODO: Transfer
+        return _mapper.map(
+                transfer(origin, destiny, request.getValue(), TransferOperationType.PIX),
+                PixTransferResponse.class);
     }
 
     @Override
@@ -175,7 +179,7 @@ public class BankOperationsService implements IBankOperationsService {
         return null;
     }
 
-    private MoneyTransferResponse transfer(AccountModel origin, AccountModel destiny, BigDecimal value, TransferOperationType transferOperationType) {
+    private TransferResponse transfer(AccountModel origin, AccountModel destiny, BigDecimal value, TransferOperationType transferOperationType) {
 
         if (origin.getBalance().compareTo(value) < 0) {
             throw new AccountBusinessRuleException("insufficient balance for the transfer",
@@ -185,49 +189,40 @@ public class BankOperationsService implements IBankOperationsService {
         ClientModel clientOrigin = _clientService .getClient(origin.getCodClient());
         ClientModel clientDestiny = _clientService.getClient(destiny.getCodClient());
 
-        switch (transferOperationType) {
-            case TRANSFER:
-                // TODO: Process origin
-                AccountTransactionModel accountTransaction = new AccountTransactionModel();
-                accountTransaction.setAccount(origin);
-                accountTransaction.setAmount(value.negate());
-                accountTransaction.setDescription(getDescptionFormated(destiny, transferOperationType));
-                accountTransaction.setLocality(getLocalityFormated(transferOperationType, clientDestiny));
-                accountTransaction.setTransactionDate(this._formatter.getTodayDate());
+        // TODO: Process origin
+        AccountTransactionModel accountTransaction = new AccountTransactionModel();
+        accountTransaction.setAccount(origin);
+        accountTransaction.setAmount(value.negate());
+        accountTransaction.setDescription(getDescptionFormated(destiny, transferOperationType));
+        accountTransaction.setLocality(getLocalityFormated(transferOperationType, clientDestiny));
+        accountTransaction.setTransactionDate(this._formatter.getTodayDate());
 
-                List<AccountTransactionModel> accountTransactions = origin.getTransactions();
-                accountTransactions.add(accountTransaction);
-                origin.setTransactions(accountTransactions);
+        List<AccountTransactionModel> accountTransactions = origin.getTransactions();
+        accountTransactions.add(accountTransaction);
+        origin.setTransactions(accountTransactions);
 
-                BigDecimal previousAmount = origin.getBalance();
-                origin.setBalance(previousAmount.subtract(value));
+        BigDecimal previousAmount = origin.getBalance();
+        origin.setBalance(previousAmount.subtract(value));
 
-                // TODO: Process destiny
-                accountTransaction = new AccountTransactionModel();
-                accountTransaction.setAccount(destiny);
-                accountTransaction.setAmount(value);
-                accountTransaction.setDescription(getDescptionFormated(origin, transferOperationType));
-                accountTransaction.setLocality(getLocalityFormated(transferOperationType, clientOrigin));
-                accountTransaction.setTransactionDate(this._formatter.getTodayDate());
+        // TODO: Process destiny
+        accountTransaction = new AccountTransactionModel();
+        accountTransaction.setAccount(destiny);
+        accountTransaction.setAmount(value);
+        accountTransaction.setDescription(getDescptionFormated(origin, transferOperationType));
+        accountTransaction.setLocality(getLocalityFormated(transferOperationType, clientOrigin));
+        accountTransaction.setTransactionDate(this._formatter.getTodayDate());
 
-                accountTransactions = destiny.getTransactions();
-                accountTransactions.add(accountTransaction);
-                destiny.setTransactions(accountTransactions);
-                destiny.setBalance(destiny.getBalance().add(value));
+        accountTransactions = destiny.getTransactions();
+        accountTransactions.add(accountTransaction);
+        destiny.setTransactions(accountTransactions);
+        destiny.setBalance(destiny.getBalance().add(value));
 
-                // TODO: Save
-                this._bankRepository.saveAccount(origin);
-                this._bankRepository.saveAccount(destiny);
+        // TODO: Save
+        this._bankRepository.saveAccount(origin);
+        this._bankRepository.saveAccount(destiny);
 
-                return getMoneyTransferResponse(origin, value, clientDestiny, previousAmount, TransferOperationType.TRANSFER);
+        return getTransferResponse(origin, value, clientDestiny, previousAmount, transferOperationType);
 
-            case PIX:
-                return getMoneyTransferResponse(origin, value, clientDestiny, null, TransferOperationType.PIX);
-
-            default:
-                throw new AccountBusinessRuleException("invalid operation",
-                        HttpStatus.UNPROCESSABLE_ENTITY, ErrorResponseType.Critical);
-        }
     }
 
     private NewAccountResponse getNewAccountResponse(NewAccountRequest request, BankModel bank, AccountModel account, CreditCardModel creditCard, PixModel pix) {
@@ -274,7 +269,6 @@ public class BankOperationsService implements IBankOperationsService {
         return response;
     }
 
-
     private CreditCardModel getCreditCardModel(NewAccountRequest request, AccountModel account) {
         CreditCardModel creditCard = new CreditCardModel();
         creditCard.setAccount(account);
@@ -310,8 +304,8 @@ public class BankOperationsService implements IBankOperationsService {
         return account;
     }
 
-    private MoneyTransferResponse getMoneyTransferResponse(AccountModel origin, BigDecimal value, ClientModel client, BigDecimal newBalance, TransferOperationType transferOperationType) {
-        MoneyTransferResponse response = new MoneyTransferResponse();
+    private TransferResponse getTransferResponse(AccountModel origin, BigDecimal value, ClientModel client, BigDecimal newBalance, TransferOperationType transferOperationType) {
+        TransferResponse response = new TransferResponse();
         response.setPreviousAmount(origin.getBalance());
         response.setTransferValue(value);
         response.setTargetAccount(getLocalityFormated(transferOperationType, client));
