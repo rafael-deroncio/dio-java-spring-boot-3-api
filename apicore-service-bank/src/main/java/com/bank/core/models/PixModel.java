@@ -1,19 +1,6 @@
 package com.bank.core.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
@@ -29,9 +16,15 @@ public class PixModel {
     @Column(name = "cod_pix")
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "cod_account")
-    private AccountModel account;
+    @Column(name = "cod_bak")
+    private Integer codBank;
+
+    @Column(name = "cod_agency")
+    private Integer codAgency;
+
+    @Column(name = "cod_account")
+    private Integer codAccount;
+
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date")
@@ -56,12 +49,28 @@ public class PixModel {
         this.id = id;
     }
 
-    public AccountModel getAccount() {
-        return account;
+    public Integer getCodBank() {
+        return codBank;
     }
 
-    public void setAccount(AccountModel account) {
-        this.account = account;
+    public void setCodBank(Integer codBank) {
+        this.codBank = codBank;
+    }
+
+    public Integer getCodAgency() {
+        return codAgency;
+    }
+
+    public void setCodAgency(Integer codAgency) {
+        this.codAgency = codAgency;
+    }
+
+    public Integer getCodAccount() {
+        return codAccount;
+    }
+
+    public void setCodAccount(Integer codAccount) {
+        this.codAccount = codAccount;
     }
 
     public Date getCreatedDate() {
@@ -95,5 +104,4 @@ public class PixModel {
     public void setPixTransactions(List<PixTransactionModel> pixTransactions) {
         this.pixTransactions = pixTransactions;
     }
-
 }

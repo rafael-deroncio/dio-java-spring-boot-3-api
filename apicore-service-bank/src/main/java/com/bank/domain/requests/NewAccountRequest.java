@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 
@@ -13,11 +14,15 @@ public class NewAccountRequest {
     @Max(value = 100, message = "The 'score' field cannot be greater than 100.")
     private Double score;
 
+    @PositiveOrZero(message = "The 'initialDeposit' field must be a positive number or zero.")
     private BigDecimal initialDeposit;
 
     @NotNull(message = "The 'client' field cannot be null.")
     @Valid
     private NewAccountClientRequest client;
+
+    @NotNull(message = "The 'registerPixKeys' field cannot be null.")
+    private Boolean registerPixKeys;
 
     public Double getScore() {
         return score;
@@ -41,5 +46,13 @@ public class NewAccountRequest {
 
     public void setInitialDeposit(BigDecimal initialDeposit) {
         this.initialDeposit = initialDeposit;
+    }
+
+    public Boolean getRegisterPixKeys() {
+        return registerPixKeys;
+    }
+
+    public void setRegisterPixKeys(Boolean registerPixKeys) {
+        this.registerPixKeys = registerPixKeys;
     }
 }

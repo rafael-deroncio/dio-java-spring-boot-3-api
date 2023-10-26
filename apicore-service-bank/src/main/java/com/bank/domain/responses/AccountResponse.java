@@ -10,6 +10,15 @@ public class AccountResponse {
     private BigDecimal amount;
     private List<TransactionResponse> transactions;
     private CreditCardResponse creditCard;
+    private List<PixResponse> pix;
+
+    public List<PixResponse> getPix() {
+        return pix;
+    }
+
+    public void setPix(List<PixResponse> pix) {
+        this.pix = pix;
+    }
 
     public String getBank() {
         return bank;

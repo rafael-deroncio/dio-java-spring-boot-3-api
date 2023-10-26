@@ -125,6 +125,8 @@ public interface IBankRepository {
      */
     PixModel savePix(PixModel pix);
 
+    PixModel getPixDetails(AccountModel account);
+
     /**
      * Saves PIX details in the repository.
      *

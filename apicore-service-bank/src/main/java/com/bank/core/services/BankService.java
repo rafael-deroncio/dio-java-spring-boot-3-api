@@ -141,7 +141,25 @@ public class BankService implements IBankService {
         CreditCardResponse creditCard = getCreditCardResponse(account);
         accountResponse.setCreditCard(creditCard);
 
+        PixModel pix = _bankRepository.getPixDetails(account);
+        accountResponse.setPix(getPixResponses(pix));
+
         return accountResponse;
+    }
+
+    @Override
+    public List<PixResponse> getPixResponses(PixModel pix) {
+        List<PixResponse> pixResponses = new ArrayList<>();
+
+        for (PixDetailModel detail : pix.getPixDetails()) {
+            PixResponse pixResponse = new PixResponse();
+            pixResponse.setType(detail.getPixKeyType());
+            pixResponse.setKey(detail.getPixKey());
+            pixResponse.setCreated(detail.getCreatedDate());
+
+            pixResponses.add(pixResponse);
+        }
+        return pixResponses;
     }
 
     private CreditCardResponse getCreditCardResponse(AccountModel account) {

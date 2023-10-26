@@ -60,7 +60,7 @@ public class BankOperationsController {
         return ResponseEntity.ok(this._operationsService.moneyTransfer(agencyNumber, accountNumber, request));
     }
 
-    @PostMapping("/account/{number}/pix/transfer")
+    @PostMapping("/agency/{agencyNumber}/account/{accountNumber}/pix/transfer")
     @Operation(summary = "Get a agency details by number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PixTransferResponse.class)))),
@@ -70,9 +70,11 @@ public class BankOperationsController {
     public ResponseEntity<PixTransferResponse> pixTransfer(
             @Valid
             @RequestBody PixTransferRequest request,
-            @Parameter(description = "account origem number to pix transfer operation", required = true)
-            @PathVariable Integer number) {
-        return ResponseEntity.ok(this._operationsService.pixTransfer(number, request));
+            @Parameter(description = "agency origem number to transfer operation", required = true)
+            @PathVariable Integer agencyNumber,
+            @Parameter(description = "account origem number to transfer operation", required = true)
+            @PathVariable Integer accountNumber) {
+        return ResponseEntity.ok(this._operationsService.pixTransfer(agencyNumber, accountNumber, request));
     }
 
     @PostMapping("/account/{number}/investment")

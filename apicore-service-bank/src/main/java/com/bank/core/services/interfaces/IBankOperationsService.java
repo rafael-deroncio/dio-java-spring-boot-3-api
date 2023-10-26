@@ -1,9 +1,12 @@
 package com.bank.core.services.interfaces;
 
+import com.bank.core.models.PixModel;
 import com.bank.domain.requests.MoneyTransferRequest;
 import com.bank.domain.requests.NewAccountRequest;
 import com.bank.domain.requests.PixTransferRequest;
 import com.bank.domain.responses.*;
+
+import java.util.List;
 
 /**
  * This interface defines the service methods for performing bank operations.
@@ -36,7 +39,7 @@ public interface IBankOperationsService {
      * @param request       The request containing information for the PIX transfer.
      * @return A response with details of the PIX transfer operation.
      */
-    PixTransferResponse pixTransfer(Integer accountNumber, PixTransferRequest request);
+    PixTransferResponse pixTransfer(Integer agencyNumber, Integer accountNumber, PixTransferRequest request);
 
     /**
      * Initiates a new investment for the specified account.

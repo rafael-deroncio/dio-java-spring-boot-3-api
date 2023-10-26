@@ -1,9 +1,11 @@
 package com.bank.core.services;
 
 import com.bank.core.enums.ErrorResponseType;
+import com.bank.core.enums.PixKeyType;
 import com.bank.core.enums.TransferOperationType;
 import com.bank.core.exceptions.AccountBusinessRuleException;
 import com.bank.core.exceptions.AgencyBusinessRuleException;
+import com.bank.core.exceptions.PixBusinessRuleException;
 import com.bank.core.exceptions.UserBusinessRuleException;
 import com.bank.core.models.*;
 import com.bank.core.repositories.BankRepository;
@@ -32,6 +34,9 @@ public class BankOperationsService implements IBankOperationsService {
     FormatterUtil _formatter;
     @Autowired
     ClientService _clientService;
+
+    @Autowired
+    BankService _bankService;
 
     @Autowired
     UserService _userService;
@@ -66,7 +71,45 @@ public class BankOperationsService implements IBankOperationsService {
         CreditCardModel creditCard = getCreditCardModel(request, account);
         this._bankRepository.saveCreditCard(creditCard);
 
-        return getNewAccountResponse(request, bank, account, creditCard);
+        PixModel pix = null;
+        if (request.getRegisterPixKeys() != null && request.getRegisterPixKeys()) {
+            pix = savePix(user, account);
+        }
+
+        return getNewAccountResponse(request, bank, account, creditCard, pix);
+    }
+
+    private PixModel savePix(UserModel user, AccountModel account) {
+        PixModel pix = new PixModel();
+
+        List<PixDetailModel> pixDetails = new ArrayList<>();
+        PixDetailModel cpfKey = new PixDetailModel();
+        cpfKey.setPix(pix);
+        cpfKey.setPixKey(user.getClient().getCpf());
+        cpfKey.setPixKeyType(PixKeyType.CPF.toString());
+        pixDetails.add(cpfKey);
+
+        PixDetailModel emailKey = new PixDetailModel();
+        emailKey.setPix(pix);
+        emailKey.setPixKey(user.getClient().getEmail());
+        emailKey.setPixKeyType(PixKeyType.EMAIL.toString());
+        pixDetails.add(emailKey);
+
+        PixDetailModel telephoneKey = new PixDetailModel();
+        telephoneKey.setPix(pix);
+        String telephone = _clientService.getClient(user.getClient().getId()).getTelephones().get(0).getPhoneNumber();
+        telephoneKey.setPixKey(telephone);
+        telephoneKey.setPixKeyType(PixKeyType.TELEPHONE.toString());
+        pixDetails.add(telephoneKey);
+
+        pix.setPixDetails(pixDetails);
+        pix.setCodAccount(account.getId());
+        pix.setCodBank(account.getCodBank());
+        pix.setCodAgency(account.getCodAgency());
+
+        this._bankRepository.savePix(pix);
+
+        return pix;
     }
 
     @Override
@@ -80,7 +123,7 @@ public class BankOperationsService implements IBankOperationsService {
         AccountModel origin = _bankRepository.getAccount(agencyNumber, accountNumber);
         if (origin == null) {
             throw new AccountBusinessRuleException(
-                    String.format("account origin not found with 'account number: %s' and 'agency number: %s'",
+                    String.format("origin account not found with 'account number: %s' and 'agency number: %s'",
                             accountNumber, agencyNumber), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
         }
 
@@ -97,7 +140,33 @@ public class BankOperationsService implements IBankOperationsService {
     }
 
     @Override
-    public PixTransferResponse pixTransfer(Integer accountNumber, PixTransferRequest request) {
+    public PixTransferResponse pixTransfer(Integer agencyNumber, Integer accountNumber, PixTransferRequest request) {
+        if (request.getValue().compareTo(BigDecimal.ZERO) < 0) {
+            throw new PixBusinessRuleException("the value cannot be negative",
+                    HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+
+        // TODO: Account Source
+        AccountModel origin = _bankRepository.getAccount(agencyNumber, accountNumber);
+        if (origin == null) {
+            throw new PixBusinessRuleException(
+                    String.format("origin account not found with 'account number: %s' and 'agency number: %s'",
+                            accountNumber, agencyNumber), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+        }
+
+        PixModel pixOrigin = _bankRepository.getPixDetails(origin);
+
+
+
+//        // TODO: Account Destiny
+//        AccountModel destiny = _bankRepository.getAccount(request.getAgencyNumber(), request.getAccountNumber());
+//        if (destiny == null) {
+//            throw new AccountBusinessRuleException(
+//                    String.format("account destiny not found with 'account number: %s' and 'agency number: %s'",
+//                            request.getAgencyNumber(), request.getAccountNumber()), HttpStatus.NOT_ACCEPTABLE, ErrorResponseType.Error);
+//        }
+//
+//        // TODO: Transfer
         return null;
     }
 
@@ -161,7 +230,7 @@ public class BankOperationsService implements IBankOperationsService {
         }
     }
 
-    private NewAccountResponse getNewAccountResponse(NewAccountRequest request, BankModel bank, AccountModel account, CreditCardModel creditCard) {
+    private NewAccountResponse getNewAccountResponse(NewAccountRequest request, BankModel bank, AccountModel account, CreditCardModel creditCard, PixModel pix) {
         NewAccountResponse response =  new NewAccountResponse();
         String bankLabel = String.format("%s - %s", bank.getId(), bank.getName());
         response.setBank(bankLabel);
@@ -198,8 +267,13 @@ public class BankOperationsService implements IBankOperationsService {
 
         response.setCreditCard(creditCardResponse);
 
+        if (pix != null) {
+            response.setPix(_bankService.getPixResponses(pix));
+        }
+
         return response;
     }
+
 
     private CreditCardModel getCreditCardModel(NewAccountRequest request, AccountModel account) {
         CreditCardModel creditCard = new CreditCardModel();

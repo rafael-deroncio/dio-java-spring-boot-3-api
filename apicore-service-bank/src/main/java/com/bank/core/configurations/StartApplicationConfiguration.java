@@ -98,9 +98,13 @@ public class StartApplicationConfiguration {
 
     private void startPix() {
         AccountModel account = this._bankRepository.getAccount(999);
+        AgencyModel agency = this._bankRepository.getAgency(999);
+        BankModel bank= this._bankRepository.getBank();
 
         PixModel pix = new PixModel();
-        pix.setAccount(account);
+        pix.setCodAccount(account.getId());
+        pix.setCodAgency(agency.getId());
+        pix.setCodBank(bank.getId());
 
         PixDetailModel pixDetail = new PixDetailModel();
         pixDetail.setPixKey("rafael.deroncio@example");

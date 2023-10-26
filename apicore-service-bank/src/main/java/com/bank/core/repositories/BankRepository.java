@@ -103,7 +103,6 @@ public class BankRepository implements IBankRepository {
         return this._accountContextRepository.getReferenceById(number);
     }
 
-
     @Override
     public AccountModel getAccountClient(ClientModel client) {
         return this._accountContextRepository.getAccountByClientId(client.getId());
@@ -143,6 +142,10 @@ public class BankRepository implements IBankRepository {
     }
 
     @Override
+    public PixModel getPixDetails(AccountModel account) {
+        return this._pixContextRepository.findByAccount(account.getCodAgency().intValue(), account.getId().intValue());
+    }
+    @Override
     public PixDetailModel savePixDetail(PixDetailModel PixDetail) {
         return this._pixDetailContextRepository.save(PixDetail);
     }
@@ -161,6 +164,4 @@ public class BankRepository implements IBankRepository {
     public InvestmentIncomesModel saveInvestmentIncomes(InvestmentIncomesModel investmentIncomes) {
         return this._investmentIncomesContextRepository.save(investmentIncomes);
     }
-
-
 }
